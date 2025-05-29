@@ -282,126 +282,161 @@ export default function ProfilePage() {
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 ml-64">
+      <div className="flex-1 lg:ml-64 mt-10">
         <Navbar />
-        <div className="pt-16 sm:pt-20 px-4 sm:px-6 lg:px-8">
+        <main className="px-4 sm:px-6 lg:px-8 py-8">
           {/* Welcome Section */}
           <div className="mb-8">
-            <h1 className="text-white text-3xl sm:text-4xl font-bold mb-2">Welcome back, {user?.name}</h1>
-            <p className="text-[#9eb7a8]">Member since {new Date(user?.createdAt || '').getFullYear()}</p>
+            <h1 className="text-[32px] text-white font-bold tracking-[-0.02em] mb-1">Welcome back, {user?.name}</h1>
+            <p className="text-[#9eb7a8] text-base">Member since {new Date(user?.createdAt || '').getFullYear()}</p>
           </div>
 
-          <div className="flex flex-col lg:flex-row gap-6">
-            {/* Progress Section */}
-            <section className="mb-12">
-              <h2 className="text-xl text-white font-bold mb-6">Your Progress</h2>
+          {/* Progress Section */}
+          <section className="mb-12">
+            <h2 className="text-xl text-white font-bold mb-6">Your Progress</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Weight Progress Card */}
+              <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-6">
+                <div className="flex flex-col">
+                  <div className="flex justify-between items-start mb-6">
+                    <div>
+                      <h3 className="text-[32px] text-white font-bold mb-1">75 kg</h3>
+                      <p className="text-[#9eb7a8] text-sm">Weight Over Time</p>
+                    </div>
+                    <span className="text-red-400 text-sm">Last 3 Months -2%</span>
+                  </div>
+                  <div className="h-[160px] w-full">
+                    <Line data={weightData} options={chartOptions} />
+                  </div>
+                  <div className="flex justify-between mt-2">
+                    <span className="text-[#9eb7a8] text-xs">Jan</span>
+                    <span className="text-[#9eb7a8] text-xs">Feb</span>
+                    <span className="text-[#9eb7a8] text-xs">Mar</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Workout Frequency Card */}
+              <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-6">
+                <div className="flex flex-col">
+                  <div className="flex justify-between items-start mb-6">
+                    <div>
+                      <h3 className="text-[32px] text-white font-bold mb-1">3 times/week</h3>
+                      <p className="text-[#9eb7a8] text-sm">Workout Frequency</p>
+                    </div>
+                    <span className="text-[#38e07b] text-sm">This Week +1</span>
+                  </div>
+                  <div className="grid grid-cols-7 gap-2">
+                    {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((day, i) => (
+                      <div key={day} className="flex flex-col items-center gap-2">
+                        <div className={`h-24 w-full ${i % 2 === 0 ? 'bg-[#38e07b]/10' : 'bg-white/5'} rounded-lg transition-colors`}></div>
+                        <span className="text-[#9eb7a8] text-xs">{day}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* Achievements Section */}
+          <section>
+            <h2 className="text-xl text-white font-bold mb-6">Achievements</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {/* First Workout Achievement */}
+              <div className="bg-white/5 backdrop-blur-sm rounded-2xl overflow-hidden">
+                <div className="aspect-square relative">
+                  <img
+                    src="https://images.unsplash.com/photo-1526506118085-60ce8714f8c5"
+                    alt="First Workout"
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <div className="p-4">
+                  <h3 className="text-white font-medium mb-1">First Workout</h3>
+                  <p className="text-[#9eb7a8] text-sm">Completed your first workout!</p>
+                </div>
+              </div>
+
+              {/* 5 Workouts Achievement */}
+              <div className="bg-white/5 backdrop-blur-sm rounded-2xl overflow-hidden">
+                <div className="aspect-square relative">
+                  <img
+                    src="https://images.unsplash.com/photo-1574680096145-d05b474e2155"
+                    alt="5 Workouts"
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <div className="p-4">
+                  <h3 className="text-white font-medium mb-1">5 Workouts Completed</h3>
+                  <p className="text-[#9eb7a8] text-sm">You've completed 5 workouts. Keep it up!</p>
+                </div>
+              </div>
+
+              {/* Consistency Badge */}
+              <div className="bg-white/5 backdrop-blur-sm rounded-2xl overflow-hidden">
+                <div className="aspect-square relative bg-[#f8c4b9]">
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="bg-white rounded-xl p-4 shadow-lg">
+                      <svg className="w-12 h-12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 15C13.6569 15 15 13.6569 15 12C15 10.3431 13.6569 9 12 9C10.3431 9 9 10.3431 9 12C9 13.6569 10.3431 15 12 15Z" stroke="#111714" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                        <path d="M12 4V3" stroke="#111714" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                        <path d="M12 21V20" stroke="#111714" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                        <path d="M20 12H21" stroke="#111714" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                        <path d="M3 12H4" stroke="#111714" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                        <path d="M17.6569 6.34314L18.364 5.63603" stroke="#111714" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                        <path d="M5.63605 18.364L6.34315 17.6569" stroke="#111714" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                        <path d="M17.6569 17.6569L18.364 18.364" stroke="#111714" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                        <path d="M5.63605 5.63603L6.34315 6.34314" stroke="#111714" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+                <div className="p-4">
+                  <h3 className="text-white font-medium mb-1">Consistency Badge</h3>
+                  <p className="text-[#9eb7a8] text-sm">Workout 3 times a week for a month</p>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* Set New Goals Section */}
+          <section className="mt-12">
+            <h2 className="text-xl text-white font-bold mb-6">Set New Goals</h2>
+            <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* Weight Progress Card */}
-                <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-6">
-                  <div className="flex flex-col">
-                    <div className="flex justify-between items-start mb-6">
-                      <div>
-                        <h3 className="text-[32px] text-white font-bold mb-1">75 kg</h3>
-                        <p className="text-[#9eb7a8] text-sm">Weight Over Time</p>
-                      </div>
-                      <span className="text-red-400 text-sm">Last 3 Months -2%</span>
-                    </div>
-                    <div className="h-[160px] w-full">
-                      <Line data={weightData} options={chartOptions} />
-                    </div>
-                    <div className="flex justify-between mt-2">
-                      <span className="text-[#9eb7a8] text-xs">Jan</span>
-                      <span className="text-[#9eb7a8] text-xs">Feb</span>
-                      <span className="text-[#9eb7a8] text-xs">Mar</span>
-                    </div>
-                  </div>
+                <div>
+                  <label className="block text-sm font-medium text-[#9eb7a8] mb-2">Target Weight (kg)</label>
+                  <input
+                    type="number"
+                    value={editForm.targetWeight}
+                    onChange={(e) => setEditForm({ ...editForm, targetWeight: e.target.value })}
+                    className="w-full px-4 py-3 rounded-xl bg-[#29382f] text-white border-none focus:ring-2 focus:ring-[#38e07b] transition-colors"
+                    placeholder="Enter your target weight"
+                  />
                 </div>
-
-                {/* Workout Frequency Card */}
-                <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-6">
-                  <div className="flex flex-col">
-                    <div className="flex justify-between items-start mb-6">
-                      <div>
-                        <h3 className="text-[32px] text-white font-bold mb-1">3 times/week</h3>
-                        <p className="text-[#9eb7a8] text-sm">Workout Frequency</p>
-                      </div>
-                      <span className="text-[#38e07b] text-sm">This Week +1</span>
-                    </div>
-                    <div className="grid grid-cols-7 gap-2">
-                      {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((day, i) => (
-                        <div key={day} className="flex flex-col items-center gap-2">
-                          <div className={`h-24 w-full ${i % 2 === 0 ? 'bg-[#38e07b]/10' : 'bg-white/5'} rounded-lg transition-colors`}></div>
-                          <span className="text-[#9eb7a8] text-xs">{day}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
+                <div>
+                  <label className="block text-sm font-medium text-[#9eb7a8] mb-2">Workout Frequency (times/week)</label>
+                  <input
+                    type="number"
+                    value={editForm.workoutFrequency}
+                    onChange={(e) => setEditForm({ ...editForm, workoutFrequency: e.target.value })}
+                    className="w-full px-4 py-3 rounded-xl bg-[#29382f] text-white border-none focus:ring-2 focus:ring-[#38e07b] transition-colors"
+                    placeholder="Enter your workout frequency"
+                  />
                 </div>
               </div>
-            </section>
-
-            {/* Achievements Section */}
-            <section>
-              <h2 className="text-xl text-white font-bold mb-6">Achievements</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {/* First Workout Achievement */}
-                <div className="bg-white/5 backdrop-blur-sm rounded-2xl overflow-hidden">
-                  <div className="aspect-square relative">
-                    <img
-                      src="https://images.unsplash.com/photo-1526506118085-60ce8714f8c5"
-                      alt="First Workout"
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  <div className="p-4">
-                    <h3 className="text-white font-medium mb-1">First Workout</h3>
-                    <p className="text-[#9eb7a8] text-sm">Completed your first workout!</p>
-                  </div>
-                </div>
-
-                {/* 5 Workouts Achievement */}
-                <div className="bg-white/5 backdrop-blur-sm rounded-2xl overflow-hidden">
-                  <div className="aspect-square relative">
-                    <img
-                      src="https://images.unsplash.com/photo-1574680096145-d05b474e2155"
-                      alt="5 Workouts"
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  <div className="p-4">
-                    <h3 className="text-white font-medium mb-1">5 Workouts Completed</h3>
-                    <p className="text-[#9eb7a8] text-sm">You've completed 5 workouts. Keep it up!</p>
-                  </div>
-                </div>
-
-                {/* Consistency Badge */}
-                <div className="bg-white/5 backdrop-blur-sm rounded-2xl overflow-hidden">
-                  <div className="aspect-square relative bg-[#f8c4b9]">
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="bg-white rounded-xl p-4 shadow-lg">
-                        <svg className="w-12 h-12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                          <path d="M12 15C13.6569 15 15 13.6569 15 12C15 10.3431 13.6569 9 12 9C10.3431 9 9 10.3431 9 12C9 13.6569 10.3431 15 12 15Z" stroke="#111714" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                          <path d="M12 4V3" stroke="#111714" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                          <path d="M12 21V20" stroke="#111714" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                          <path d="M20 12H21" stroke="#111714" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                          <path d="M3 12H4" stroke="#111714" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                          <path d="M17.6569 6.34314L18.364 5.63603" stroke="#111714" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                          <path d="M5.63605 18.364L6.34315 17.6569" stroke="#111714" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                          <path d="M17.6569 17.6569L18.364 18.364" stroke="#111714" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                          <path d="M5.63605 5.63603L6.34315 6.34314" stroke="#111714" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                        </svg>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="p-4">
-                    <h3 className="text-white font-medium mb-1">Consistency Badge</h3>
-                    <p className="text-[#9eb7a8] text-sm">Workout 3 times a week for a month</p>
-                  </div>
-                </div>
+              <div className="mt-6">
+                <button
+                  onClick={handleSave}
+                  className="w-full sm:w-auto bg-[#38e07b] text-black px-6 py-3 rounded-xl text-sm font-bold hover:bg-[#2bc665] transition-colors"
+                >
+                  Update Goals
+                </button>
               </div>
-            </section>
-          </div>
-        </div>
+            </div>
+          </section>
+        </main>
       </div>
     </div>
   );
