@@ -260,18 +260,20 @@ export default function Navbar() {
         </div>
 
         {/* Mobile menu backdrop */}
-        <div 
-          className={`fixed inset-0 bg-black/50 transition-opacity duration-300 md:hidden ${
-            isMenuOpen ? 'opacity-100 z-40' : 'opacity-0 pointer-events-none'
-          }`}
-          onClick={() => setIsMenuOpen(false)}
-        />
+        {isMenuOpen && (
+          <div 
+            className="fixed inset-0 bg-black/50 transition-opacity duration-300 md:hidden z-40"
+            style={{ pointerEvents: isMenuOpen ? 'auto' : 'none' }}
+            onClick={() => setIsMenuOpen(false)}
+          />
+        )}
 
         {/* Mobile menu */}
         <div 
-          className={`fixed inset-y-0 right-0 w-64 bg-[#111714] transform transition-transform duration-300 ease-in-out md:hidden ${
+          className={`fixed inset-y-0 right-0 w-64 bg-[#111714] transform transition-transform duration-300 ease-in-out md:hidden z-50 ${
             isMenuOpen ? 'translate-x-0' : 'translate-x-full'
           }`}
+          onClick={(e) => e.stopPropagation()}
         >
           <div className="h-full flex flex-col">
             <div className="flex-1 overflow-y-auto py-4">
@@ -279,17 +281,19 @@ export default function Navbar() {
                 {navLinks.map((link) => {
                   const isActive = pathname === link.href;
                   return (
-                    <Link
+                    <button
                       key={link.href}
-                      href={link.href}
-                      className={`flex items-center gap-3 px-4 py-3 rounded-lg text-base font-medium transition-colors ${
+                      className={`flex items-center gap-3 px-4 py-3 rounded-lg text-base font-medium transition-colors w-full text-left ${
                         isActive ? 'text-[#38e07b] bg-[#1a1f1c]' : 'text-white hover:text-[#38e07b] hover:bg-[#1a1f1c]'
                       }`}
-                      onClick={() => setIsMenuOpen(false)}
+                      onClick={() => {
+                        setIsMenuOpen(false);
+                        router.push(link.href);
+                      }}
                     >
                       {link.icon}
                       {link.label}
-                    </Link>
+                    </button>
                   );
                 })}
               </div>
@@ -306,22 +310,25 @@ export default function Navbar() {
                       </div>
                       <span className="text-white font-medium">{user.name}</span>
                     </div>
-                    <Link
-                      href="/profile"
-                      className="flex items-center gap-3 px-4 py-3 rounded-lg text-base font-medium text-white hover:text-[#38e07b] hover:bg-[#1a1f1c] transition-colors"
-                      onClick={() => setIsMenuOpen(false)}
+                    <button
+                      className="flex items-center gap-3 px-4 py-3 rounded-lg text-base font-medium text-white hover:text-[#38e07b] hover:bg-[#1a1f1c] transition-colors w-full text-left"
+                      onClick={() => {
+                        setIsMenuOpen(false);
+                        router.push('/profile');
+                      }}
                     >
                       <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                       </svg>
                       Profile Settings
-                    </Link>
+                    </button>
                     <button
                       onClick={() => {
                         handleLogout();
                         setIsMenuOpen(false);
+                        router.push('/');
                       }}
-                      className="flex items-center gap-3 px-4 py-3 rounded-lg text-base font-medium text-red-400 hover:text-red-500 hover:bg-[#1a1f1c] transition-colors w-full"
+                      className="flex items-center gap-3 px-4 py-3 rounded-lg text-base font-medium text-red-400 hover:text-red-500 hover:bg-[#1a1f1c] transition-colors w-full text-left"
                     >
                       <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
