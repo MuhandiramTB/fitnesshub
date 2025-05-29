@@ -265,106 +265,10 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#111714] flex">
-      {/* Sidebar */}
-      <div className={`w-64 bg-[#1a1f1c] min-h-screen fixed left-0 top-0 z-40 transform ${
-        isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
-      } lg:translate-x-0 transition-transform duration-300 ease-in-out shadow-xl`}>
-        <div className="flex flex-col h-full pt-20 p-4">
-          {/* Back Button */}
-          <button
-            onClick={handleBack}
-            className="flex items-center gap-2 px-4 py-3 rounded-lg text-[#9eb7a8] hover:text-white hover:bg-[#29382f]/50 transition-all duration-200 mb-6"
-          >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-            </svg>
-            <span className="text-sm font-medium">Back</span>
-          </button>
-
-          {/* User Profile */}
-          <div className="flex items-center gap-3 mb-8 px-2">
-            <div className="w-10 h-10 rounded-full bg-[#38e07b] flex items-center justify-center text-black text-lg font-bold">
-              {user?.name?.charAt(0).toUpperCase()}
-            </div>
-            <div className="flex flex-col">
-              <h2 className="text-white text-sm font-medium">{user?.name}</h2>
-              <p className="text-[#9eb7a8] text-xs">Member since {new Date(user?.createdAt || '').getFullYear()}</p>
-            </div>
-          </div>
-
-          {/* Sidebar Navigation Links */}
-          <nav className="flex-1">
-            <ul className="space-y-1.5">
-              {navItems.map((item) => (
-                <li key={item.href}>
-                  <Link
-                    href={item.href}
-                    onClick={() => setIsSidebarOpen(false)}
-                    className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${
-                      item.isActive
-                        ? 'bg-[#38e07b]/10 text-[#38e07b]'
-                        : 'text-[#9eb7a8] hover:text-white hover:bg-[#29382f]/30'
-                    }`}
-                  >
-                    {item.icon}
-                    <span className="text-sm font-medium">{item.label}</span>
-                    {item.isActive && (
-                      <div className="ml-auto w-1.5 h-1.5 rounded-full bg-[#38e07b]" />
-                    )}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </nav>
-
-          {/* Logout Button */}
-          <div className="mt-auto pt-4 border-t border-white/10">
-            <button
-              onClick={handleLogout}
-              className="flex items-center gap-3 w-full px-4 py-3 rounded-lg text-[#9eb7a8] hover:text-white hover:bg-[#29382f]/50 transition-all duration-200"
-            >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-              </svg>
-              <span className="text-sm font-medium">Logout</span>
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Main Content */}
-      <div className="flex-1 lg:ml-64 mt-10">
-        {/* Mobile Menu Button */}
-        <button
-          onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-          className="fixed top-4 left-4 z-50 p-3 rounded-xl bg-[#29382f]/80 backdrop-blur-sm text-white hover:bg-[#38e07b] transition-all duration-200 lg:hidden focus:outline-none focus:ring-2 focus:ring-[#38e07b] focus:ring-opacity-50 shadow-lg"
-          aria-label="Toggle menu"
-        >
-          {isSidebarOpen ? (
-            <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M18 6L6 18" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round"/>
-              <path d="M6 6L18 18" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-          ) : (
-            <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M4 7H20" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round"/>
-              <path d="M4 12H20" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round"/>
-              <path d="M4 17H20" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-          )}
-        </button>
-
-        {/* Overlay for mobile */}
-        {isSidebarOpen && (
-          <div
-            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-30 lg:hidden transition-opacity duration-300"
-            onClick={() => setIsSidebarOpen(false)}
-            aria-hidden="true"
-          ></div>
-        )}
-
-        <main className="px-4 sm:px-6 lg:px-8 py-8">
+    <div className="min-h-screen bg-[#111714] flex flex-col">
+      <Navbar />
+      <div className="flex-1 w-full pt-16">
+        <main className="px-4 sm:px-6 lg:px-8 py-8 pb-20 lg:pb-0">
           {/* Welcome Section */}
           <div className="mb-8">
             <h1 className="text-[32px] text-white font-bold tracking-[-0.02em] mb-1">Welcome back, {user?.name}</h1>
@@ -530,23 +434,22 @@ export default function ProfilePage() {
             </div>
           </section>
         </main>
-
-        {/* Bottom Navigation Bar - Mobile Only */}
-        <nav className="fixed bottom-0 left-0 right-0 z-50 bg-[#1a1f1c] border-t border-[#38e07b]/10 flex justify-around items-center py-2 lg:hidden">
-          {navItems.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={`flex flex-col items-center justify-center gap-1 px-2 py-1 rounded-lg transition-all duration-200 text-xs font-medium ${
-                item.isActive ? 'text-[#38e07b]' : 'text-[#9eb7a8] hover:text-white'
-              }`}
-            >
-              {item.icon}
-              <span>{item.label}</span>
-            </Link>
-          ))}
-        </nav>
       </div>
+      {/* Bottom Navigation Bar - Mobile Only */}
+      <nav className="fixed bottom-0 left-0 right-0 z-50 bg-[#1a1f1c] border-t border-[#38e07b]/10 flex justify-around items-center py-2 lg:hidden">
+        {navItems.map((item) => (
+          <Link
+            key={item.href}
+            href={item.href}
+            className={`flex flex-col items-center justify-center gap-1 px-2 py-1 rounded-lg transition-all duration-200 text-xs font-medium ${
+              item.isActive ? 'text-[#38e07b]' : 'text-[#9eb7a8] hover:text-white'
+            }`}
+          >
+            {item.icon}
+            <span>{item.label}</span>
+          </Link>
+        ))}
+      </nav>
     </div>
   );
 }
