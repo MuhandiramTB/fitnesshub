@@ -67,7 +67,7 @@ export default function ProfilePage() {
       label: "Dashboard",
       isActive: true,
       icon: (
-        <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
           <path d="M4 6C4 4.89543 4.89543 4 6 4H8C9.10457 4 10 4.89543 10 6V8C10 9.10457 9.10457 10 8 10H6C4.89543 10 4 9.10457 4 8V6Z" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round"/>
           <path d="M14 6C14 4.89543 14.8954 4 16 4H18C19.1046 4 20 4.89543 20 6V8C20 9.10457 19.1046 10 18 10H16C14.8954 10 14 9.10457 14 8V6Z" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round"/>
           <path d="M4 16C4 14.8954 4.89543 14 6 14H8C9.10457 14 10 14.8954 10 16V18C10 19.1046 9.10457 20 8 20H6C4.89543 20 4 19.1046 4 18V16Z" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round"/>
@@ -79,7 +79,7 @@ export default function ProfilePage() {
       href: "/workouts",
       label: "Workouts",
       icon: (
-        <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
           <path d="M6.5 4C4.567 4 3 5.567 3 7.5C3 9.433 4.567 11 6.5 11C8.433 11 10 9.433 10 7.5C10 5.567 8.433 4 6.5 4Z" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round"/>
           <path d="M17.5 4C15.567 4 14 5.567 14 7.5C14 9.433 15.567 11 17.5 11C19.433 11 21 9.433 21 7.5C21 5.567 19.433 4 17.5 4Z" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round"/>
           <path d="M6.5 13C4.567 13 3 14.567 3 16.5C3 18.433 4.567 20 6.5 20C8.433 20 10 18.433 10 16.5C10 14.567 8.433 13 6.5 13Z" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round"/>
@@ -91,7 +91,7 @@ export default function ProfilePage() {
       href: "/nutrition",
       label: "Nutrition",
       icon: (
-        <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
           <path d="M6.115 6.792C6.115 4.692 7.825 3 10.001 3C12.177 3 13.887 4.692 13.887 6.792C13.887 8.892 12.177 10.584 10.001 10.584C7.825 10.584 6.115 8.892 6.115 6.792Z" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round"/>
           <path d="M15.001 21H5.00098C4.44869 21 4.00098 20.5523 4.00098 20V19C4.00098 16.2386 6.23955 14 9.00098 14H11.001C13.7624 14 16.001 16.2386 16.001 19V20C16.001 20.5523 15.5533 21 15.001 21Z" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round"/>
           <path d="M17.001 3H20.001C20.5533 3 21.001 3.44772 21.001 4V7" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round"/>
@@ -103,7 +103,7 @@ export default function ProfilePage() {
       href: "/progress",
       label: "Progress",
       icon: (
-        <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
           <path d="M3 12L7 16L11 12" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round"/>
           <path d="M3 6L7 2L11 6" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round"/>
           <path d="M13 8L17 12L21 8" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round"/>
@@ -115,7 +115,7 @@ export default function ProfilePage() {
       href: "/community",
       label: "Community",
       icon: (
-        <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
           <path d="M12 11C14.2091 11 16 9.20914 16 7C16 4.79086 14.2091 3 12 3C9.79086 3 8 4.79086 8 7C8 9.20914 9.79086 11 12 11Z" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round"/>
           <path d="M19 21H5C4.44772 21 4 20.5523 4 20V19C4 16.2386 6.23858 14 9 14H15C17.7614 14 20 16.2386 20 19V20C20 20.5523 19.5523 21 19 21Z" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round"/>
         </svg>
@@ -268,7 +268,61 @@ export default function ProfilePage() {
     <div className="min-h-screen bg-[#111714] flex flex-col">
       <Navbar />
       <div className="flex-1 w-full pt-16">
-        <main className="px-4 sm:px-6 lg:px-8 py-8 pb-20 lg:pb-0">
+        {/* Desktop Sidebar */}
+        <aside className="hidden lg:block fixed left-0 top-16 bottom-0 w-64 bg-[#1a1f1c] border-r border-[#38e07b]/10">
+          <div className="p-6 flex flex-col h-full">
+            <div className="flex items-center gap-3 mb-8">
+              <div className="w-12 h-12 rounded-full bg-[#38e07b] flex items-center justify-center text-black text-xl font-bold">
+                {user?.name.charAt(0).toUpperCase()}
+              </div>
+              <div>
+                <h3 className="text-white font-medium">{user?.name}</h3>
+                <p className="text-[#9eb7a8] text-sm">Member since {new Date(user?.createdAt || '').getFullYear()}</p>
+              </div>
+            </div>
+            <nav className="space-y-1 flex-1">
+              {navItems.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 ${
+                    item.isActive 
+                      ? 'bg-[#38e07b] text-black' 
+                      : 'text-[#9eb7a8] hover:text-white hover:bg-white/5'
+                  }`}
+                >
+                  {item.icon}
+                  {item.label}
+                </Link>
+              ))}
+            </nav>
+            
+            {/* Bottom Navigation */}
+            <div className="space-y-2 pt-4 border-t border-white/10">
+              <Link
+                href="/"
+                className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-[#9eb7a8] hover:text-white hover:bg-white/5 transition-all duration-200"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                </svg>
+                Home
+              </Link>
+              <button
+                onClick={handleLogout}
+                className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-red-400 hover:text-red-300 hover:bg-red-400/10 transition-all duration-200 w-full text-left"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                </svg>
+                Logout
+              </button>
+            </div>
+          </div>
+        </aside>
+
+        {/* Main Content */}
+        <main className="px-4 sm:px-6 lg:pl-72 lg:pr-8 py-8 pb-20 lg:pb-0">
           {/* Welcome Section */}
           <div className="mb-8">
             <h1 className="text-[32px] text-white font-bold tracking-[-0.02em] mb-1">Welcome back, {user?.name}</h1>
