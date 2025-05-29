@@ -1,6 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
@@ -37,6 +39,7 @@ const plans = [
 ];
 
 export default function MembershipPage() {
+  const router = useRouter();
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -45,24 +48,89 @@ export default function MembershipPage() {
     address: '',
     membershipPlan: '',
   });
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const [isLogin, setIsLogin] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    setIsAuthenticated(!!token);
+  }, []);
+
+  const handlePlanSelection = (planName: string) => {
+    if (!isAuthenticated) {
+      setShowAuthModal(true);
+      return;
+    }
+    setFormData(prev => ({ ...prev, membershipPlan: planName }));
+    // Handle authenticated user's plan selection
+    console.log('Selected plan:', planName);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // Handle form submission here
-    console.log('Form submitted:', formData);
+    const formData = new FormData(e.currentTarget);
+    const email = formData.get('email');
+    const password = formData.get('password');
+
+    try {
+      const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      const response = await fetch(`${apiBaseUrl}/api/auth/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        localStorage.setItem('token', data.token);
+        setIsAuthenticated(true);
+        setShowAuthModal(false);
+        // Refresh the page to update authentication state
+        window.location.reload();
+      } else {
+        throw new Error('Login failed');
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      // Handle login error (show message to user)
+    }
+  };
+
+  const handleRegister = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const name = formData.get('name');
+    const email = formData.get('email');
+    const password = formData.get('password');
+
+    try {
+      const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      const response = await fetch(`${apiBaseUrl}/api/auth/register`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ name, email, password }),
+      });
+
+      if (response.ok) {
+        // Switch to login form after successful registration
+        setIsLogin(true);
+      } else {
+        throw new Error('Registration failed');
+      }
+    } catch (error) {
+      console.error('Registration error:', error);
+      // Handle registration error (show message to user)
+    }
   };
 
   return (
     <section className="py-12 bg-[#111714] text-white mt-12">
-        <Navbar/>
+      <Navbar/>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <h2 className="text-3xl font-bold text-white mb-4">
@@ -89,7 +157,7 @@ export default function MembershipPage() {
               </div>
               <button 
                 className="w-full mb-6 bg-[#38e07b] text-black py-2 px-4 rounded-md hover:bg-[#2bc665] transition-colors font-medium"
-                onClick={() => setFormData(prev => ({ ...prev, membershipPlan: plan.name }))}
+                onClick={() => handlePlanSelection(plan.name)}
               >
                 Join {plan.name}
               </button>
@@ -117,113 +185,111 @@ export default function MembershipPage() {
           ))}
         </div>
 
-        {/* Registration Form */}
-        <div className="max-w-2xl mx-auto">
-          <h3 className="text-2xl font-bold text-white mb-8">Register Now</h3>
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="grid grid-cols-2 gap-6">
-              <div>
-                <label htmlFor="firstName" className="block text-sm font-medium text-gray-300 mb-1">
-                  First Name
-                </label>
-                <input
-                  type="text"
-                  id="firstName"
-                  name="firstName"
-                  value={formData.firstName}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-2 bg-[#29382f] border border-[#38e07b]/20 rounded-md focus:ring-2 focus:ring-[#38e07b] focus:border-[#38e07b] text-white placeholder-gray-400"
-                  placeholder="Enter your first name"
-                />
+        {/* Auth Modal */}
+        {showAuthModal && (
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center">
+            <div className="bg-[#1a1f1c] rounded-2xl p-8 w-full max-w-md m-4">
+              <div className="flex justify-between items-center mb-6">
+                <h3 className="text-xl font-bold text-white">
+                  {isLogin ? 'Login to Continue' : 'Create an Account'}
+                </h3>
+                <button
+                  onClick={() => setShowAuthModal(false)}
+                  className="text-gray-400 hover:text-white transition-colors"
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
               </div>
-              <div>
-                <label htmlFor="lastName" className="block text-sm font-medium text-gray-300 mb-1">
-                  Last Name
-                </label>
-                <input
-                  type="text"
-                  id="lastName"
-                  name="lastName"
-                  value={formData.lastName}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-2 bg-[#29382f] border border-[#38e07b]/20 rounded-md focus:ring-2 focus:ring-[#38e07b] focus:border-[#38e07b] text-white placeholder-gray-400"
-                  placeholder="Enter your last name"
-                />
-              </div>
-            </div>
 
-            <div className="grid grid-cols-2 gap-6">
-              <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-1">
-                  Email
-                </label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-2 bg-[#29382f] border border-[#38e07b]/20 rounded-md focus:ring-2 focus:ring-[#38e07b] focus:border-[#38e07b] text-white placeholder-gray-400"
-                  placeholder="Enter your email address"
-                />
-              </div>
-              <div>
-                <label htmlFor="phoneNumber" className="block text-sm font-medium text-gray-300 mb-1">
-                  Phone Number
-                </label>
-                <input
-                  type="tel"
-                  id="phoneNumber"
-                  name="phoneNumber"
-                  value={formData.phoneNumber}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-2 bg-[#29382f] border border-[#38e07b]/20 rounded-md focus:ring-2 focus:ring-[#38e07b] focus:border-[#38e07b] text-white placeholder-gray-400"
-                  placeholder="Enter your phone number"
-                />
-              </div>
+              {isLogin ? (
+                <form onSubmit={handleLogin} className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-1">Email</label>
+                    <input
+                      type="email"
+                      name="email"
+                      required
+                      className="w-full px-4 py-3 rounded-xl bg-[#29382f] text-white border-none focus:ring-2 focus:ring-[#38e07b] transition-colors"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-1">Password</label>
+                    <input
+                      type="password"
+                      name="password"
+                      required
+                      className="w-full px-4 py-3 rounded-xl bg-[#29382f] text-white border-none focus:ring-2 focus:ring-[#38e07b] transition-colors"
+                    />
+                  </div>
+                  <button
+                    type="submit"
+                    className="w-full bg-[#38e07b] text-black py-3 px-4 rounded-xl font-medium hover:bg-[#2bc665] transition-colors"
+                  >
+                    Login
+                  </button>
+                  <p className="text-center text-gray-400 text-sm">
+                    Don't have an account?{' '}
+                    <button
+                      type="button"
+                      onClick={() => setIsLogin(false)}
+                      className="text-[#38e07b] hover:text-[#2bc665] transition-colors"
+                    >
+                      Register
+                    </button>
+                  </p>
+                </form>
+              ) : (
+                <form onSubmit={handleRegister} className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-1">Name</label>
+                    <input
+                      type="text"
+                      name="name"
+                      required
+                      className="w-full px-4 py-3 rounded-xl bg-[#29382f] text-white border-none focus:ring-2 focus:ring-[#38e07b] transition-colors"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-1">Email</label>
+                    <input
+                      type="email"
+                      name="email"
+                      required
+                      className="w-full px-4 py-3 rounded-xl bg-[#29382f] text-white border-none focus:ring-2 focus:ring-[#38e07b] transition-colors"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-1">Password</label>
+                    <input
+                      type="password"
+                      name="password"
+                      required
+                      className="w-full px-4 py-3 rounded-xl bg-[#29382f] text-white border-none focus:ring-2 focus:ring-[#38e07b] transition-colors"
+                    />
+                  </div>
+                  <button
+                    type="submit"
+                    className="w-full bg-[#38e07b] text-black py-3 px-4 rounded-xl font-medium hover:bg-[#2bc665] transition-colors"
+                  >
+                    Register
+                  </button>
+                  <p className="text-center text-gray-400 text-sm">
+                    Already have an account?{' '}
+                    <button
+                      type="button"
+                      onClick={() => setIsLogin(true)}
+                      className="text-[#38e07b] hover:text-[#2bc665] transition-colors"
+                    >
+                      Login
+                    </button>
+                  </p>
+                </form>
+              )}
             </div>
-
-            <div>
-              <label htmlFor="address" className="block text-sm font-medium text-gray-300 mb-1">
-                Address
-              </label>
-              <input
-                type="text"
-                id="address"
-                name="address"
-                value={formData.address}
-                onChange={handleInputChange}
-                className="w-full px-4 py-2 bg-[#29382f] border border-[#38e07b]/20 rounded-md focus:ring-2 focus:ring-[#38e07b] focus:border-[#38e07b] text-white placeholder-gray-400"
-                placeholder="Enter your address"
-              />
-            </div>
-
-            <div>
-              <label htmlFor="membershipPlan" className="block text-sm font-medium text-gray-300 mb-1">
-                Membership Plan
-              </label>
-              <select
-                id="membershipPlan"
-                name="membershipPlan"
-                value={formData.membershipPlan}
-                onChange={handleInputChange}
-                className="w-full px-4 py-2 bg-[#29382f] border border-[#38e07b]/20 rounded-md focus:ring-2 focus:ring-[#38e07b] focus:border-[#38e07b] text-white"
-              >
-                <option value="" className="bg-[#29382f]">Select a plan</option>
-                {plans.map(plan => (
-                  <option key={plan.name} value={plan.name} className="bg-[#29382f]">{plan.name}</option>
-                ))}
-              </select>
-            </div>
-
-            <button
-              type="submit"
-              className="w-full bg-[#38e07b] text-black py-3 px-6 rounded-md hover:bg-[#2bc665] transition-colors font-medium"
-            >
-              Submit
-            </button>
-          </form>
-        </div>
+          </div>
+        )}
       </div>
       <Footer/>
     </section>
