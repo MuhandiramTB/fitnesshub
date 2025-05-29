@@ -5,6 +5,18 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { loadStripe } from '@stripe/stripe-js';
+import { Elements } from '@stripe/react-stripe-js';
+import StripePaymentForm from '@/components/StripePaymentForm';
+
+// Initialize Stripe with error handling
+const stripePromise = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
+  ? loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY)
+  : Promise.reject(new Error('Stripe publishable key is missing'));
+
+if (!process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY) {
+  console.error('Warning: Stripe publishable key is missing. Please check your environment variables.');
+}
 
 const plans = [
   {
@@ -51,20 +63,97 @@ export default function MembershipPage() {
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [isLogin, setIsLogin] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
+  const [paymentMethod, setPaymentMethod] = useState<'stripe' | 'qr' | null>(null);
+  const [paymentStatus, setPaymentStatus] = useState<'pending' | 'completed' | 'failed' | null>(null);
+  const [qrCode, setQrCode] = useState<string | null>(null);
+  const [clientSecret, setClientSecret] = useState<string | null>(null);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
     setIsAuthenticated(!!token);
   }, []);
 
-  const handlePlanSelection = (planName: string) => {
+  const handlePlanSelection = async (planName: string) => {
     if (!isAuthenticated) {
       setShowAuthModal(true);
       return;
     }
-    setFormData(prev => ({ ...prev, membershipPlan: planName }));
-    // Handle authenticated user's plan selection
-    console.log('Selected plan:', planName);
+    setSelectedPlan(planName);
+    setShowPaymentModal(true);
+  };
+
+  const handlePaymentMethodSelection = async (method: 'stripe' | 'qr') => {
+    setPaymentMethod(method);
+    const token = localStorage.getItem('token');
+    
+    try {
+      const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      const response = await fetch(`${apiBaseUrl}/api/payment/create-payment`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          membershipPlan: selectedPlan,
+          paymentMethod: method
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('Payment creation failed');
+      }
+
+      const data = await response.json();
+
+      if (method === 'stripe') {
+        setClientSecret(data.clientSecret);
+      } else if (method === 'qr') {
+        setQrCode(data.qrCode);
+        // Start polling for payment status
+        startPaymentStatusPolling(data.paymentId);
+      }
+    } catch (error) {
+      console.error('Payment error:', error);
+      setPaymentStatus('failed');
+    }
+  };
+
+  const startPaymentStatusPolling = (paymentId: string) => {
+    const pollInterval = setInterval(async () => {
+      const token = localStorage.getItem('token');
+      try {
+        const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+        const response = await fetch(`${apiBaseUrl}/api/payment/status/${paymentId}`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error('Status check failed');
+        }
+
+        const { status } = await response.json();
+        if (status === 'completed') {
+          setPaymentStatus('completed');
+          clearInterval(pollInterval);
+          // Handle successful payment
+          window.location.reload();
+        } else if (status === 'failed') {
+          setPaymentStatus('failed');
+          clearInterval(pollInterval);
+        }
+      } catch (error) {
+        console.error('Status check error:', error);
+        clearInterval(pollInterval);
+      }
+    }, 3000); // Poll every 3 seconds
+
+    // Clear interval after 5 minutes
+    setTimeout(() => clearInterval(pollInterval), 300000);
   };
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -286,6 +375,94 @@ export default function MembershipPage() {
                     </button>
                   </p>
                 </form>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Payment Modal */}
+        {showPaymentModal && (
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center">
+            <div className="bg-[#1a1f1c] rounded-2xl p-8 w-full max-w-md m-4">
+              <div className="flex justify-between items-center mb-6">
+                <h3 className="text-xl font-bold text-white">
+                  Choose Payment Method
+                </h3>
+                <button
+                  onClick={() => {
+                    setShowPaymentModal(false);
+                    setPaymentMethod(null);
+                    setQrCode(null);
+                    setClientSecret(null);
+                  }}
+                  className="text-gray-400 hover:text-white transition-colors"
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+
+              {!paymentMethod ? (
+                <div className="space-y-4">
+                  <button
+                    onClick={() => handlePaymentMethodSelection('stripe')}
+                    className="w-full flex items-center justify-center gap-3 bg-white text-black py-3 px-4 rounded-xl font-medium hover:bg-gray-100 transition-colors"
+                  >
+                    <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M12 0C5.383 0 0 5.383 0 12s5.383 12 12 12 12-5.383 12-12S18.617 0 12 0zm-1.53 14.47c-.293.293-.767.293-1.06 0l-2.83-2.83c-.293-.293-.293-.767 0-1.06.293-.293.767-.293 1.06 0l2.83 2.83c.293.293.293.767 0 1.06zm6.53-3.53l-4 4c-.293.293-.767.293-1.06 0-.293-.293-.293-.767 0-1.06l4-4c.293-.293.767-.293 1.06 0 .293.293.293.767 0 1.06z"/>
+                    </svg>
+                    Pay with Card
+                  </button>
+                  <button
+                    onClick={() => handlePaymentMethodSelection('qr')}
+                    className="w-full flex items-center justify-center gap-3 bg-[#38e07b] text-black py-3 px-4 rounded-xl font-medium hover:bg-[#2bc665] transition-colors"
+                  >
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v1m6 11h2m-6 0h-2v4m0-11v-4m6 0h-2m2 0v4m-6-4h-2m2 0v4m-6 0h-2m2 0v4m-6-4h-2m2 0v4m-6-4h-2m2 0v4m-6-4h-2m2 0v4m-6-4h-2m2 0v4m-6-4h-2m2 0v4m-6-4h-2m2 0v4m-6-4h-2m2 0v4m-6-4h-2m2 0v4" />
+                    </svg>
+                    Pay with QR Code
+                  </button>
+                </div>
+              ) : paymentMethod === 'stripe' && clientSecret ? (
+                stripePromise ? (
+                  <Elements stripe={stripePromise} options={{ clientSecret }}>
+                    <StripePaymentForm />
+                  </Elements>
+                ) : (
+                  <div className="text-center text-red-500 mt-4">
+                    Stripe payment is not available. Please try another payment method or contact support.
+                  </div>
+                )
+              ) : paymentMethod === 'qr' && qrCode ? (
+                <div className="space-y-4">
+                  <div className="bg-white p-4 rounded-lg">
+                    <img src={qrCode} alt="Payment QR Code" className="w-full" />
+                  </div>
+                  <p className="text-center text-gray-300">
+                    Scan the QR code with your banking app to complete the payment
+                  </p>
+                  {paymentStatus === 'pending' && (
+                    <div className="flex items-center justify-center gap-2 text-[#38e07b]">
+                      <svg className="w-5 h-5 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                      </svg>
+                      Waiting for payment...
+                    </div>
+                  )}
+                </div>
+              ) : null}
+
+              {paymentStatus === 'completed' && (
+                <div className="text-center text-[#38e07b] mt-4">
+                  Payment completed successfully!
+                </div>
+              )}
+
+              {paymentStatus === 'failed' && (
+                <div className="text-center text-red-500 mt-4">
+                  Payment failed. Please try again.
+                </div>
               )}
             </div>
           </div>
