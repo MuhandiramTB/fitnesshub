@@ -1,12 +1,63 @@
 'use client';
 
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import RegisterModal from './Auth/RegisterModal';
+import { useRouter } from 'next/navigation';
+
+interface UserData {
+  id: string;
+  name: string;
+  email: string;
+}
 
 export default function Navbar() {
+  const router = useRouter();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
+  const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
+  const [user, setUser] = useState<UserData | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isLoginMode, setIsLoginMode] = useState(true);
+
+  useEffect(() => {
+    const checkAuthStatus = async () => {
+      const token = localStorage.getItem('token');
+      if (token) {
+        try {
+          const response = await fetch('http://localhost:5000/api/user/profile', {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          });
+          if (response.ok) {
+            const userData = await response.json();
+            setUser(userData);
+          } else {
+            localStorage.removeItem('token');
+          }
+        } catch (error) {
+          console.error('Error fetching user profile:', error);
+          localStorage.removeItem('token');
+        }
+      }
+      setIsLoading(false);
+    };
+
+    checkAuthStatus();
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    setUser(null);
+    setIsUserDropdownOpen(false);
+    router.refresh();
+  };
+
+  const handleAuthClick = (isLogin: boolean) => {
+    setIsLoginMode(isLogin);
+    setIsRegisterModalOpen(true);
+  };
 
   const navLinks = [
     { href: '/', label: 'Home', icon: (
@@ -98,12 +149,72 @@ export default function Navbar() {
 
           {/* Right side buttons - Desktop */}
           <div className="hidden md:flex md:items-center md:space-x-4">
-            <button 
-              onClick={() => setIsRegisterModalOpen(true)}
-              className="bg-[#38e07b] text-black px-4 py-1.5 rounded-full text-sm font-medium hover:bg-[#2bc665] transition-colors"
-            >
-              Join Now
-            </button>
+            {!isLoading && (
+              user ? (
+                <div className="relative">
+                  <button 
+                    onClick={() => setIsUserDropdownOpen(!isUserDropdownOpen)}
+                    className="flex items-center space-x-2 text-white hover:text-[#38e07b] transition-colors"
+                  >
+                    <div className="w-8 h-8 rounded-full bg-[#38e07b] flex items-center justify-center text-black">
+                      {user.name.charAt(0).toUpperCase()}
+                    </div>
+                    <span className="text-sm">{user.name}</span>
+                  </button>
+
+                  {/* User Dropdown Menu */}
+                  {isUserDropdownOpen && (
+                    <div className="absolute right-0 mt-2 w-48 bg-[#1a1f1c] rounded-lg shadow-lg py-1 z-50">
+                      <Link
+                        href="/profile"
+                        className="block px-4 py-2 text-sm text-white hover:bg-[#29382f] transition-colors"
+                        onClick={() => setIsUserDropdownOpen(false)}
+                      >
+                        Profile Settings
+                      </Link>
+                      <Link
+                        href="/my-programs"
+                        className="block px-4 py-2 text-sm text-white hover:bg-[#29382f] transition-colors"
+                        onClick={() => setIsUserDropdownOpen(false)}
+                      >
+                        My Programs
+                      </Link>
+                      <Link
+                        href="/my-nutrition"
+                        className="block px-4 py-2 text-sm text-white hover:bg-[#29382f] transition-colors"
+                        onClick={() => setIsUserDropdownOpen(false)}
+                      >
+                        My Nutrition Plan
+                      </Link>
+                      <button
+                        onClick={handleLogout}
+                        className="block w-full text-left px-4 py-2 text-sm text-red-400 hover:bg-[#29382f] transition-colors"
+                      >
+                        Logout
+                      </button>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div className="flex items-center space-x-4">
+                  <button 
+                    onClick={() => handleAuthClick(true)}
+                    className="flex items-center gap-2 text-white hover:text-[#38e07b] transition-colors"
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    </svg>
+                    <span className="text-sm">Login</span>
+                  </button>
+                  <button 
+                    onClick={() => handleAuthClick(false)}
+                    className="bg-[#38e07b] text-black px-4 py-1.5 rounded-full text-sm font-medium hover:bg-[#2bc665] transition-colors"
+                  >
+                    Sign Up
+                  </button>
+                </div>
+              )
+            )}
             <button className="text-white text-sm hover:text-[#38e07b] transition-colors">
               Language
             </button>
@@ -125,16 +236,77 @@ export default function Navbar() {
               {link.label}
             </Link>
           ))}
-          <div className="pt-4 pb-3 border-t border-[#38e07b]/20">
-            <button 
-              onClick={() => {
-                setIsRegisterModalOpen(true);
-                setIsMenuOpen(false);
-              }}
-              className="w-full bg-[#38e07b] text-black px-4 py-2 rounded-full text-sm font-medium hover:bg-[#2bc665] transition-colors mb-2"
-            >
-              Join Now
-            </button>
+          {!isLoading && user ? (
+            <>
+              <Link
+                href="/profile"
+                className="flex items-center gap-3 text-white hover:text-[#38e07b] px-3 py-2 rounded-md text-base font-medium transition-colors"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+                Profile Settings
+              </Link>
+              <Link
+                href="/my-programs"
+                className="flex items-center gap-3 text-white hover:text-[#38e07b] px-3 py-2 rounded-md text-base font-medium transition-colors"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                </svg>
+                My Programs
+              </Link>
+              <Link
+                href="/my-nutrition"
+                className="flex items-center gap-3 text-white hover:text-[#38e07b] px-3 py-2 rounded-md text-base font-medium transition-colors"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3" />
+                </svg>
+                My Nutrition Plan
+              </Link>
+              <button
+                onClick={() => {
+                  handleLogout();
+                  setIsMenuOpen(false);
+                }}
+                className="flex items-center gap-3 text-red-400 hover:text-red-500 px-3 py-2 rounded-md text-base font-medium transition-colors"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                </svg>
+                Logout
+              </button>
+            </>
+          ) : (
+            <div className="w-full flex flex-col gap-2 pt-4 border-t border-[#38e07b]/20">
+              <button 
+                onClick={() => {
+                  handleAuthClick(true);
+                  setIsMenuOpen(false);
+                }}
+                className="flex items-center justify-center gap-2 text-white hover:text-[#38e07b] px-3 py-2 rounded-md text-base font-medium transition-colors"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+                Login
+              </button>
+              <button 
+                onClick={() => {
+                  handleAuthClick(false);
+                  setIsMenuOpen(false);
+                }}
+                className="w-full bg-[#38e07b] text-black px-4 py-2 rounded-full text-sm font-medium hover:bg-[#2bc665] transition-colors"
+              >
+                Sign Up
+              </button>
+            </div>
+          )}
+          <div className="pt-4 pb-3 border-t border-[#38e07b]/20 w-full">
             <button className="w-full text-white text-sm hover:text-[#38e07b] transition-colors px-4 py-2">
               Language
             </button>
@@ -146,6 +318,11 @@ export default function Navbar() {
       <RegisterModal 
         isOpen={isRegisterModalOpen} 
         onCloseAction={() => setIsRegisterModalOpen(false)} 
+        onLoginSuccess={(userData) => {
+          setUser(userData);
+          setIsRegisterModalOpen(false);
+        }}
+        initialMode={isLoginMode}
       />
     </header>
   );

@@ -12,7 +12,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@prisma/client": "^6.8.2",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
@@ -20,10 +19,11 @@
     "express-rate-limit": "^6.11.2",
     "helmet": "^7.2.0",
     "jsonwebtoken": "^9.0.0",
-    "pg": "^8.10.0",
-    "prisma": "^6.8.2"
+    "pg": "^8.10.0"
   },
   "devDependencies": {
-    "nodemon": "^2.0.22"
+    "@prisma/client": "^6.8.2",
+    "nodemon": "^2.0.22",
+    "prisma": "^6.8.2"
   }
 }

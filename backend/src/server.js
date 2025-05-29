@@ -176,6 +176,58 @@ app.get('/api/user/profile', authenticateToken, async (req, res) => {
   }
 });
 
+// Update user profile
+app.put('/api/user/profile/update', authenticateToken, async (req, res) => {
+  try {
+    const { name, email } = req.body;
+
+    // Input validation
+    if (!email || !name) {
+      return res.status(400).json({ message: 'Name and email are required' });
+    }
+
+    // Email format validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({ message: 'Invalid email format' });
+    }
+
+    // Check if email is already taken by another user
+    const existingUser = await prisma.user.findFirst({
+      where: {
+        email,
+        NOT: {
+          id: req.user.userId
+        }
+      }
+    });
+
+    if (existingUser) {
+      return res.status(400).json({ message: 'Email is already taken' });
+    }
+
+    // Update user
+    const updatedUser = await prisma.user.update({
+      where: { id: req.user.userId },
+      data: {
+        name,
+        email
+      },
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        createdAt: true
+      }
+    });
+
+    res.json(updatedUser);
+  } catch (error) {
+    console.error('Profile update error:', error);
+    res.status(500).json({ message: 'Error updating profile' });
+  }
+});
+
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
