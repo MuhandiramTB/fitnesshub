@@ -245,7 +245,9 @@ export default function ProfilePage() {
   return (
     <div className="min-h-screen bg-[#111714] flex">
       {/* Sidebar */}
-      <div className="w-64 bg-[#1a1f1c] min-h-screen fixed left-0 top-0 z-30">
+      <div className={`w-64 bg-[#1a1f1c] min-h-screen fixed left-0 top-0 z-30 transform mt-16 ${
+        isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
+      } lg:translate-x-0 transition-transform duration-300 ease-in-out`}>
         <div className="flex flex-col h-full p-4">
           {/* User Profile */}
           <div className="flex items-center gap-3 mb-8">
@@ -283,6 +285,35 @@ export default function ProfilePage() {
 
       {/* Main Content */}
       <div className="flex-1 lg:ml-64 mt-10">
+        {/* Mobile Menu Button */}
+        <div className="fixed top-4 left-4 lg:hidden z-50">
+          <button
+            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+            className="p-2 rounded-lg bg-[#29382f] text-white hover:bg-[#38e07b] transition-colors"
+            aria-label="Toggle menu"
+          >
+            {isSidebarOpen ? (
+              // Close icon
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            ) : (
+              // Menu icon
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            )}
+          </button>
+        </div>
+
+        {/* Overlay for mobile */}
+        {isSidebarOpen && (
+          <div
+            className="fixed inset-0 bg-black bg-opacity-50 z-20 lg:hidden"
+            onClick={() => setIsSidebarOpen(false)}
+          ></div>
+        )}
+
         <Navbar />
         <main className="px-4 sm:px-6 lg:px-8 py-8">
           {/* Welcome Section */}
