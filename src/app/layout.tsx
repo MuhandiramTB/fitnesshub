@@ -3,25 +3,29 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import Breadcrumb from "@/components/Breadcrumb";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Fitness Hub",
-  description: "Your ultimate fitness destination",
+  description: "Your all-in-one fitness platform",
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang="en">
-      <body className={`${inter.className} bg-[#111714] min-h-screen flex flex-col`}>
-        <main className="flex-1">
+      <body className={`${inter.className} bg-[#111714] text-white min-h-screen flex flex-col`}>
+        <Navbar />
+        <Breadcrumb />
+        <main className="flex-grow">
           {children}
         </main>
+        <Footer />
       </body>
     </html>
   );

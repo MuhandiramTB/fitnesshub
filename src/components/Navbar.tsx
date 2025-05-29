@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
+import { usePathname } from 'next/navigation';
 import RegisterModal from './Auth/RegisterModal';
 import { useRouter } from 'next/navigation';
 
@@ -13,6 +14,7 @@ interface UserData {
 
 export default function Navbar() {
   const router = useRouter();
+  const pathname = usePathname();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
@@ -122,16 +124,24 @@ export default function Navbar() {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex md:items-center md:space-x-8">
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className="flex items-center gap-2 text-white text-sm hover:text-[#38e07b] transition-colors"
-              >
-                {link.icon}
-                {link.label}
-              </Link>
-            ))}
+            {navLinks.map((link) => {
+              const isActive = pathname === link.href;
+              return (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className={`flex items-center gap-2 text-sm transition-all duration-200 relative group ${
+                    isActive ? 'text-[#38e07b]' : 'text-white hover:text-[#38e07b]'
+                  }`}
+                >
+                  {link.icon}
+                  {link.label}
+                  <span className={`absolute -bottom-1 left-0 w-0 h-0.5 bg-[#38e07b] transition-all duration-200 group-hover:w-full ${
+                    isActive ? 'w-full' : ''
+                  }`} />
+                </Link>
+              );
+            })}
           </nav>
 
           {/* Mobile menu button */}
@@ -221,7 +231,6 @@ export default function Navbar() {
                 </div>
               )
             )}
-            
           </div>
         </div>
       </div>
@@ -229,98 +238,34 @@ export default function Navbar() {
       {/* Mobile menu */}
       <div className={`${isMenuOpen ? 'block' : 'hidden'} md:hidden bg-[#111714] border-t border-[#38e07b]/20`}>
         <div className="px-2 pt-2 pb-3 space-y-1 flex flex-col items-center">
-          {navLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className="flex items-center gap-3 text-white hover:text-[#38e07b] px-3 py-2 rounded-md text-base font-medium transition-colors"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              {link.icon}
-              {link.label}
-            </Link>
-          ))}
-          {!isLoading && user ? (
-            <>
+          {navLinks.map((link) => {
+            const isActive = pathname === link.href;
+            return (
               <Link
-                href="/profile"
-                className="flex items-center gap-3 text-white hover:text-[#38e07b] px-3 py-2 rounded-md text-base font-medium transition-colors"
+                key={link.href}
+                href={link.href}
+                className={`flex items-center gap-3 px-3 py-2 rounded-md text-base font-medium transition-colors w-full justify-center ${
+                  isActive ? 'text-[#38e07b] bg-[#1a1f1c]' : 'text-white hover:text-[#38e07b] hover:bg-[#1a1f1c]'
+                }`}
                 onClick={() => setIsMenuOpen(false)}
               >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                </svg>
-                Profile Settings
+                {link.icon}
+                {link.label}
               </Link>
-              <Link
-                href="/my-programs"
-                className="flex items-center gap-3 text-white hover:text-[#38e07b] px-3 py-2 rounded-md text-base font-medium transition-colors"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                </svg>
-                My Programs
-              </Link>
-              <Link
-                href="/my-nutrition"
-                className="flex items-center gap-3 text-white hover:text-[#38e07b] px-3 py-2 rounded-md text-base font-medium transition-colors"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3" />
-                </svg>
-                My Nutrition Plan
-              </Link>
-              <button
-                onClick={() => {
-                  handleLogout();
-                  setIsMenuOpen(false);
-                }}
-                className="flex items-center gap-3 text-red-400 hover:text-red-500 px-3 py-2 rounded-md text-base font-medium transition-colors"
-              >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                </svg>
-                Logout
-              </button>
-            </>
-          ) : (
-            <div className="w-full flex flex-col gap-2 pt-4 border-t border-[#38e07b]/20">
-              <button 
-                onClick={() => {
-                  handleAuthClick(true);
-                  setIsMenuOpen(false);
-                }}
-                className="flex items-center justify-center gap-2 text-white hover:text-[#38e07b] px-3 py-2 rounded-md text-base font-medium transition-colors"
-              >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                </svg>
-                Login
-              </button>
-              <button 
-                onClick={() => {
-                  handleAuthClick(false);
-                  setIsMenuOpen(false);
-                }}
-                className="w-full bg-[#38e07b] text-black px-4 py-2 rounded-full text-sm font-medium hover:bg-[#2bc665] transition-colors"
-              >
-                Sign Up
-              </button>
-            </div>
-          )}
-          
+            );
+          })}
         </div>
       </div>
 
-      {/* Registration Modal */}
-      <RegisterModal 
-        isOpen={isRegisterModalOpen} 
-        onCloseAction={() => setIsRegisterModalOpen(false)} 
-        onLoginSuccessAction={handleLoginSuccessAction}
-        initialMode={isLoginMode}
-      />
+      {/* Register Modal */}
+      {isRegisterModalOpen && (
+        <RegisterModal
+          isOpen={isRegisterModalOpen}
+          onCloseAction={() => setIsRegisterModalOpen(false)}
+          onLoginSuccessAction={handleLoginSuccessAction}
+          initialMode={isLoginMode}
+        />
+      )}
     </header>
   );
 } 
