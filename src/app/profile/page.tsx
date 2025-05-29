@@ -53,6 +53,7 @@ export default function ProfilePage() {
   const [user, setUser] = useState<UserProfile | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [editForm, setEditForm] = useState({
     name: '',
     email: '',
@@ -323,6 +324,70 @@ export default function ProfilePage() {
 
         {/* Main Content */}
         <main className="px-4 sm:px-6 lg:pl-72 lg:pr-8 py-8 pb-20 lg:pb-0">
+          {/* Mobile Menu Button */}
+          <div className="lg:hidden fixed top-4 right-4 z-50">
+            <button
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="p-2 rounded-lg bg-[#1a1f1c] border border-[#38e07b]/10"
+            >
+              <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </button>
+          </div>
+
+          {/* Mobile Menu */}
+          {isMobileMenuOpen && (
+            <div className="lg:hidden fixed inset-0 z-40 mt-16">
+              <div className="absolute inset-0 bg-black/50" onClick={() => setIsMobileMenuOpen(false)} />
+              <div className="absolute right-0 top-0 bottom-0 w-64 bg-[#111714] border-l border-[#38e07b]/10 p-6">
+                <div className="flex items-center gap-3 mb-8">
+                  <div className="w-12 h-12 rounded-full bg-[#38e07b] flex items-center justify-center text-black text-xl font-bold">
+                    {user?.name.charAt(0).toUpperCase()}
+                  </div>
+                  <div>
+                    <h3 className="text-white font-medium">{user?.name}</h3>
+                    <p className="text-[#9eb7a8] text-sm">Member since {new Date(user?.createdAt || '').getFullYear()}</p>
+                  </div>
+                </div>
+                <nav className="space-y-2">
+                  <Link
+                    href="/"
+                    className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-[#9eb7a8] hover:text-white hover:bg-white/5 transition-all duration-200"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                    </svg>
+                    Home
+                  </Link>
+                  <Link
+                    href="/profile"
+                    className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium bg-[#38e07b] text-black"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    </svg>
+                    Profile Details
+                  </Link>
+                  <button
+                    onClick={() => {
+                      handleLogout();
+                      setIsMobileMenuOpen(false);
+                    }}
+                    className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-red-400 hover:text-red-300 hover:bg-red-400/10 transition-all duration-200 w-full text-left"
+                  >
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                    </svg>
+                    Logout
+                  </button>
+                </nav>
+              </div>
+            </div>
+          )}
+
           {/* Welcome Section */}
           <div className="mb-8">
             <h1 className="text-[32px] text-white font-bold tracking-[-0.02em] mb-1">Welcome back, {user?.name}</h1>
@@ -489,8 +554,8 @@ export default function ProfilePage() {
           </section>
         </main>
       </div>
-      {/* Bottom Navigation Bar - Mobile Only */}
-      <nav className="fixed bottom-0 left-0 right-0 z-50 bg-[#1a1f1c] border-t border-[#38e07b]/10 flex justify-around items-center py-2 lg:hidden">
+       {/* Bottom Navigation Bar - Mobile Only */}
+       <nav className="fixed bottom-0 left-0 right-0 z-50 bg-[#1a1f1c] border-t border-[#38e07b]/10 flex justify-around items-center py-2 lg:hidden">
         {navItems.map((item) => (
           <Link
             key={item.href}
@@ -503,6 +568,7 @@ export default function ProfilePage() {
             <span>{item.label}</span>
           </Link>
         ))}
+        <nav/>
       </nav>
     </div>
   );
