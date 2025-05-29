@@ -2,9 +2,11 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
+import RegisterModal from './Auth/RegisterModal';
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
 
   const navLinks = [
     { href: '/', label: 'Home', icon: (
@@ -96,7 +98,10 @@ export default function Navbar() {
 
           {/* Right side buttons - Desktop */}
           <div className="hidden md:flex md:items-center md:space-x-4">
-            <button className="bg-[#38e07b] text-black px-4 py-1.5 rounded-full text-sm font-medium hover:bg-[#2bc665] transition-colors">
+            <button 
+              onClick={() => setIsRegisterModalOpen(true)}
+              className="bg-[#38e07b] text-black px-4 py-1.5 rounded-full text-sm font-medium hover:bg-[#2bc665] transition-colors"
+            >
               Join Now
             </button>
             <button className="text-white text-sm hover:text-[#38e07b] transition-colors">
@@ -121,7 +126,13 @@ export default function Navbar() {
             </Link>
           ))}
           <div className="pt-4 pb-3 border-t border-[#38e07b]/20">
-            <button className="w-full bg-[#38e07b] text-black px-4 py-2 rounded-full text-sm font-medium hover:bg-[#2bc665] transition-colors mb-2">
+            <button 
+              onClick={() => {
+                setIsRegisterModalOpen(true);
+                setIsMenuOpen(false);
+              }}
+              className="w-full bg-[#38e07b] text-black px-4 py-2 rounded-full text-sm font-medium hover:bg-[#2bc665] transition-colors mb-2"
+            >
               Join Now
             </button>
             <button className="w-full text-white text-sm hover:text-[#38e07b] transition-colors px-4 py-2">
@@ -130,6 +141,12 @@ export default function Navbar() {
           </div>
         </div>
       </div>
+
+      {/* Registration Modal */}
+      <RegisterModal 
+        isOpen={isRegisterModalOpen} 
+        onClose={() => setIsRegisterModalOpen(false)} 
+      />
     </header>
   );
 } 
