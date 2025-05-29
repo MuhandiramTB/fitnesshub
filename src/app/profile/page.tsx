@@ -67,8 +67,11 @@ export default function ProfilePage() {
       label: "Dashboard",
       isActive: true,
       icon: (
-        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+        <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M4 6C4 4.89543 4.89543 4 6 4H8C9.10457 4 10 4.89543 10 6V8C10 9.10457 9.10457 10 8 10H6C4.89543 10 4 9.10457 4 8V6Z" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round"/>
+          <path d="M14 6C14 4.89543 14.8954 4 16 4H18C19.1046 4 20 4.89543 20 6V8C20 9.10457 19.1046 10 18 10H16C14.8954 10 14 9.10457 14 8V6Z" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round"/>
+          <path d="M4 16C4 14.8954 4.89543 14 6 14H8C9.10457 14 10 14.8954 10 16V18C10 19.1046 9.10457 20 8 20H6C4.89543 20 4 19.1046 4 18V16Z" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round"/>
+          <path d="M14 16C14 14.8954 14.8954 14 16 14H18C19.1046 14 20 14.8954 20 16V18C20 19.1046 19.1046 20 18 20H16C14.8954 20 14 19.1046 14 18V16Z" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round"/>
         </svg>
       )
     },
@@ -76,8 +79,11 @@ export default function ProfilePage() {
       href: "/workouts",
       label: "Workouts",
       icon: (
-        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+        <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M6.5 4C4.567 4 3 5.567 3 7.5C3 9.433 4.567 11 6.5 11C8.433 11 10 9.433 10 7.5C10 5.567 8.433 4 6.5 4Z" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round"/>
+          <path d="M17.5 4C15.567 4 14 5.567 14 7.5C14 9.433 15.567 11 17.5 11C19.433 11 21 9.433 21 7.5C21 5.567 19.433 4 17.5 4Z" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round"/>
+          <path d="M6.5 13C4.567 13 3 14.567 3 16.5C3 18.433 4.567 20 6.5 20C8.433 20 10 18.433 10 16.5C10 14.567 8.433 13 6.5 13Z" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round"/>
+          <path d="M17.5 13C15.567 13 14 14.567 14 16.5C14 18.433 15.567 20 17.5 20C19.433 20 21 18.433 21 16.5C21 14.567 19.433 13 17.5 13Z" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round"/>
         </svg>
       )
     },
@@ -85,8 +91,11 @@ export default function ProfilePage() {
       href: "/nutrition",
       label: "Nutrition",
       icon: (
-        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3" />
+        <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M6.115 6.792C6.115 4.692 7.825 3 10.001 3C12.177 3 13.887 4.692 13.887 6.792C13.887 8.892 12.177 10.584 10.001 10.584C7.825 10.584 6.115 8.892 6.115 6.792Z" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round"/>
+          <path d="M15.001 21H5.00098C4.44869 21 4.00098 20.5523 4.00098 20V19C4.00098 16.2386 6.23955 14 9.00098 14H11.001C13.7624 14 16.001 16.2386 16.001 19V20C16.001 20.5523 15.5533 21 15.001 21Z" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round"/>
+          <path d="M17.001 3H20.001C20.5533 3 21.001 3.44772 21.001 4V7" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round"/>
+          <path d="M17.001 21H20.001C20.5533 21 21.001 20.5523 21.001 20V17" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round"/>
         </svg>
       )
     },
@@ -94,8 +103,11 @@ export default function ProfilePage() {
       href: "/progress",
       label: "Progress",
       icon: (
-        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+        <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M3 12L7 16L11 12" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round"/>
+          <path d="M3 6L7 2L11 6" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round"/>
+          <path d="M13 8L17 12L21 8" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round"/>
+          <path d="M13 18L17 14L21 18" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round"/>
         </svg>
       )
     },
@@ -103,8 +115,9 @@ export default function ProfilePage() {
       href: "/community",
       label: "Community",
       icon: (
-        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+        <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 11C14.2091 11 16 9.20914 16 7C16 4.79086 14.2091 3 12 3C9.79086 3 8 4.79086 8 7C8 9.20914 9.79086 11 12 11Z" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round"/>
+          <path d="M19 21H5C4.44772 21 4 20.5523 4 20V19C4 16.2386 6.23858 14 9 14H15C17.7614 14 20 16.2386 20 19V20C20 20.5523 19.5523 21 19 21Z" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round"/>
         </svg>
       )
     }
@@ -280,22 +293,25 @@ export default function ProfilePage() {
             </div>
           </div>
 
-          {/* Navigation Links */}
+          {/* Sidebar Navigation Links */}
           <nav className="flex-1">
-            <ul className="space-y-2">
+            <ul className="space-y-1.5">
               {navItems.map((item) => (
                 <li key={item.href}>
                   <Link
                     href={item.href}
                     onClick={() => setIsSidebarOpen(false)}
-                    className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${
+                    className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${
                       item.isActive
-                        ? 'bg-[#29382f] text-white'
-                        : 'text-[#9eb7a8] hover:text-white hover:bg-[#29382f]/50'
+                        ? 'bg-[#38e07b]/10 text-[#38e07b]'
+                        : 'text-[#9eb7a8] hover:text-white hover:bg-[#29382f]/30'
                     }`}
                   >
                     {item.icon}
                     <span className="text-sm font-medium">{item.label}</span>
+                    {item.isActive && (
+                      <div className="ml-auto w-1.5 h-1.5 rounded-full bg-[#38e07b]" />
+                    )}
                   </Link>
                 </li>
               ))}
@@ -322,16 +338,19 @@ export default function ProfilePage() {
         {/* Mobile Menu Button */}
         <button
           onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-          className="fixed top-4 left-4 z-50 p-3 rounded-xl bg-[#29382f] text-white hover:bg-[#38e07b] transition-colors duration-200 lg:hidden focus:outline-none focus:ring-2 focus:ring-[#38e07b] focus:ring-opacity-50"
+          className="fixed top-4 left-4 z-50 p-3 rounded-xl bg-[#29382f]/80 backdrop-blur-sm text-white hover:bg-[#38e07b] transition-all duration-200 lg:hidden focus:outline-none focus:ring-2 focus:ring-[#38e07b] focus:ring-opacity-50 shadow-lg"
           aria-label="Toggle menu"
         >
           {isSidebarOpen ? (
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M18 6L6 18" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M6 6L18 18" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
           ) : (
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+            <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M4 7H20" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M4 12H20" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M4 17H20" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
           )}
         </button>
@@ -357,40 +376,40 @@ export default function ProfilePage() {
             <h2 className="text-xl text-white font-bold mb-6">Your Progress</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Weight Progress Card */}
-              <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-6">
+              <div className="bg-gradient-to-br from-white/5 to-white/[0.02] backdrop-blur-sm rounded-2xl p-6 border border-white/10 hover:border-[#38e07b]/20 transition-colors">
                 <div className="flex flex-col">
                   <div className="flex justify-between items-start mb-6">
                     <div>
                       <h3 className="text-[32px] text-white font-bold mb-1">75 kg</h3>
                       <p className="text-[#9eb7a8] text-sm">Weight Over Time</p>
                     </div>
-                    <span className="text-red-400 text-sm">Last 3 Months -2%</span>
+                    <span className="text-red-400 text-sm bg-red-400/10 px-3 py-1 rounded-full">Last 3 Months -2%</span>
                   </div>
                   <div className="h-[160px] w-full">
                     <Line data={weightData} options={chartOptions} />
-                  </div>
-                  <div className="flex justify-between mt-2">
-                    <span className="text-[#9eb7a8] text-xs">Jan</span>
-                    <span className="text-[#9eb7a8] text-xs">Feb</span>
-                    <span className="text-[#9eb7a8] text-xs">Mar</span>
                   </div>
                 </div>
               </div>
 
               {/* Workout Frequency Card */}
-              <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-6">
+              <div className="bg-gradient-to-br from-white/5 to-white/[0.02] backdrop-blur-sm rounded-2xl p-6 border border-white/10 hover:border-[#38e07b]/20 transition-colors">
                 <div className="flex flex-col">
                   <div className="flex justify-between items-start mb-6">
                     <div>
                       <h3 className="text-[32px] text-white font-bold mb-1">3 times/week</h3>
                       <p className="text-[#9eb7a8] text-sm">Workout Frequency</p>
                     </div>
-                    <span className="text-[#38e07b] text-sm">This Week +1</span>
+                    <span className="text-[#38e07b] text-sm bg-[#38e07b]/10 px-3 py-1 rounded-full">This Week +1</span>
                   </div>
                   <div className="grid grid-cols-7 gap-2">
                     {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((day, i) => (
                       <div key={day} className="flex flex-col items-center gap-2">
-                        <div className={`h-24 w-full ${i % 2 === 0 ? 'bg-[#38e07b]/10' : 'bg-white/5'} rounded-lg transition-colors`}></div>
+                        <div className={`h-24 w-full ${
+                          i % 2 === 0 
+                            ? 'bg-[#38e07b]/10 hover:bg-[#38e07b]/20' 
+                            : 'bg-white/5 hover:bg-white/10'
+                          } rounded-xl transition-all cursor-pointer`}>
+                        </div>
                         <span className="text-[#9eb7a8] text-xs">{day}</span>
                       </div>
                     ))}
@@ -464,34 +483,47 @@ export default function ProfilePage() {
           {/* Set New Goals Section */}
           <section className="mt-12">
             <h2 className="text-xl text-white font-bold mb-6">Set New Goals</h2>
-            <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-6">
+            <div className="bg-gradient-to-br from-white/5 to-white/[0.02] backdrop-blur-sm rounded-2xl p-6 border border-white/10">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-sm font-medium text-[#9eb7a8] mb-2">Target Weight (kg)</label>
-                  <input
-                    type="number"
-                    value={editForm.targetWeight}
-                    onChange={(e) => setEditForm({ ...editForm, targetWeight: e.target.value })}
-                    className="w-full px-4 py-3 rounded-xl bg-[#29382f] text-white border-none focus:ring-2 focus:ring-[#38e07b] transition-colors"
-                    placeholder="Enter your target weight"
-                  />
+                  <div className="relative">
+                    <input
+                      type="number"
+                      value={editForm.targetWeight}
+                      onChange={(e) => setEditForm({ ...editForm, targetWeight: e.target.value })}
+                      className="w-full px-4 py-3 rounded-xl bg-[#29382f]/50 text-white border border-white/10 focus:border-[#38e07b] focus:ring-1 focus:ring-[#38e07b] transition-all placeholder-white/30"
+                      placeholder="Enter your target weight"
+                    />
+                    <div className="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none">
+                      <span className="text-[#9eb7a8] text-sm">kg</span>
+                    </div>
+                  </div>
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-[#9eb7a8] mb-2">Workout Frequency (times/week)</label>
-                  <input
-                    type="number"
-                    value={editForm.workoutFrequency}
-                    onChange={(e) => setEditForm({ ...editForm, workoutFrequency: e.target.value })}
-                    className="w-full px-4 py-3 rounded-xl bg-[#29382f] text-white border-none focus:ring-2 focus:ring-[#38e07b] transition-colors"
-                    placeholder="Enter your workout frequency"
-                  />
+                  <div className="relative">
+                    <input
+                      type="number"
+                      value={editForm.workoutFrequency}
+                      onChange={(e) => setEditForm({ ...editForm, workoutFrequency: e.target.value })}
+                      className="w-full px-4 py-3 rounded-xl bg-[#29382f]/50 text-white border border-white/10 focus:border-[#38e07b] focus:ring-1 focus:ring-[#38e07b] transition-all placeholder-white/30"
+                      placeholder="Enter your workout frequency"
+                    />
+                    <div className="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none">
+                      <span className="text-[#9eb7a8] text-sm">/ week</span>
+                    </div>
+                  </div>
                 </div>
               </div>
               <div className="mt-6">
                 <button
                   onClick={handleSave}
-                  className="w-full sm:w-auto bg-[#38e07b] text-black px-6 py-3 rounded-xl text-sm font-bold hover:bg-[#2bc665] transition-colors"
+                  className="flex items-center justify-center gap-2 w-full sm:w-auto bg-[#38e07b] text-black px-6 py-3 rounded-xl text-sm font-bold hover:bg-[#2bc665] transition-all focus:ring-2 focus:ring-[#38e07b] focus:ring-offset-2 focus:ring-offset-[#111714]"
                 >
+                  <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5 12L10 17L19 8" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
                   Update Goals
                 </button>
               </div>
