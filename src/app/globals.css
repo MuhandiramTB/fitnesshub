@@ -2,15 +2,32 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
-  :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+@layer components {
+  .btn-primary {
+    @apply bg-[#38e07b] text-[#111714] px-4 py-1.5 rounded-full text-sm font-medium hover:bg-[#2bc665] transition-colors;
   }
-}
 
-@layer base {
-  body {
-    @apply bg-background text-foreground;
+  .btn-secondary {
+    @apply text-white hover:text-[#38e07b] transition-colors;
+  }
+
+  .nav-link {
+    @apply flex items-center gap-2 text-white text-sm hover:text-[#38e07b] transition-colors;
+  }
+
+  .input-field {
+    @apply w-full px-4 py-2 rounded-lg bg-[#29382f] text-white border-none focus:ring-2 focus:ring-[#38e07b] transition-colors;
+  }
+
+  .modal-content {
+    @apply bg-[#1a1f1c] rounded-xl p-8;
+  }
+
+  .dropdown-menu {
+    @apply bg-[#1a1f1c] rounded-lg shadow-lg py-1;
+  }
+
+  .dropdown-item {
+    @apply block px-4 py-2 text-sm text-white hover:bg-[#29382f] transition-colors;
   }
 }

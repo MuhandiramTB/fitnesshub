@@ -3,18 +3,31 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
+interface UserData {
+  id: string;
+  name: string;
+  email: string;
+}
+
 interface RegisterModalProps {
   isOpen: boolean;
   onCloseAction: () => void;
-  onLoginSuccess: (userData: any) => void;
+  onLoginSuccessAction: (userData: UserData) => void;
   initialMode?: boolean;
+  initialEmail?: string;
 }
 
-export default function RegisterModal({ isOpen, onCloseAction, onLoginSuccess, initialMode = true }: RegisterModalProps) {
+export default function RegisterModal({ 
+  isOpen, 
+  onCloseAction, 
+  onLoginSuccessAction, 
+  initialMode = true,
+  initialEmail = ''
+}: RegisterModalProps) {
   const router = useRouter();
   const [isLogin, setIsLogin] = useState(initialMode);
   const [formData, setFormData] = useState({
-    email: '',
+    email: initialEmail,
     password: '',
     name: ''
   });
@@ -25,6 +38,13 @@ export default function RegisterModal({ isOpen, onCloseAction, onLoginSuccess, i
     setIsLogin(initialMode);
   }, [initialMode]);
 
+  useEffect(() => {
+    setFormData(prev => ({
+      ...prev,
+      email: initialEmail
+    }));
+  }, [initialEmail]);
+
   if (!isOpen) return null;
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -34,7 +54,8 @@ export default function RegisterModal({ isOpen, onCloseAction, onLoginSuccess, i
 
     try {
       const endpoint = isLogin ? '/api/auth/login' : '/api/auth/register';
-      const response = await fetch(`http://localhost:5000${endpoint}`, {
+      const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      const response = await fetch(`${apiBaseUrl}${endpoint}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -50,7 +71,7 @@ export default function RegisterModal({ isOpen, onCloseAction, onLoginSuccess, i
 
       // Store token in localStorage
       localStorage.setItem('token', data.token);
-      onLoginSuccess(data.user);
+      onLoginSuccessAction(data.user);
       router.refresh();
     } catch (err: any) {
       setError(err.message);
@@ -60,8 +81,8 @@ export default function RegisterModal({ isOpen, onCloseAction, onLoginSuccess, i
   };
 
   const handleGoogleAuth = async () => {
-    // Implement Google OAuth
-    window.location.href = 'http://localhost:5000/api/auth/google';
+    const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+    window.location.href = `${apiBaseUrl}/api/auth/google`;
   };
 
   return (
@@ -74,6 +95,7 @@ export default function RegisterModal({ isOpen, onCloseAction, onLoginSuccess, i
           <button
             onClick={onCloseAction}
             className="text-gray-400 hover:text-white transition-colors"
+            aria-label="Close modal"
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -82,7 +104,7 @@ export default function RegisterModal({ isOpen, onCloseAction, onLoginSuccess, i
         </div>
 
         {error && (
-          <div className="bg-red-500/10 border border-red-500 text-red-500 px-4 py-2 rounded-lg mb-4">
+          <div className="bg-red-500/10 border border-red-500 text-red-500 px-4 py-2 rounded-lg mb-4" role="alert">
             {error}
           </div>
         )}
@@ -90,10 +112,11 @@ export default function RegisterModal({ isOpen, onCloseAction, onLoginSuccess, i
         <form onSubmit={handleSubmit} className="space-y-4">
           {!isLogin && (
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-1">
+              <label htmlFor="name" className="block text-sm font-medium text-gray-300 mb-1">
                 Name
               </label>
               <input
+                id="name"
                 type="text"
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
@@ -105,10 +128,11 @@ export default function RegisterModal({ isOpen, onCloseAction, onLoginSuccess, i
           )}
 
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-1">
+            <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-1">
               Email
             </label>
             <input
+              id="email"
               type="email"
               value={formData.email}
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
@@ -119,10 +143,11 @@ export default function RegisterModal({ isOpen, onCloseAction, onLoginSuccess, i
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-1">
+            <label htmlFor="password" className="block text-sm font-medium text-gray-300 mb-1">
               Password
             </label>
             <input
+              id="password"
               type="password"
               value={formData.password}
               onChange={(e) => setFormData({ ...formData, password: e.target.value })}
@@ -147,7 +172,7 @@ export default function RegisterModal({ isOpen, onCloseAction, onLoginSuccess, i
           >
             {isLoading ? (
               <span className="flex items-center justify-center">
-                <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-[#111714]" fill="none" viewBox="0 0 24 24">
+                <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-[#111714]" fill="none" viewBox="0 0 24 24" aria-hidden="true">
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                 </svg>
@@ -173,7 +198,7 @@ export default function RegisterModal({ isOpen, onCloseAction, onLoginSuccess, i
           className="w-full flex items-center justify-center gap-2 bg-white text-gray-800 font-bold py-2 px-4 rounded-lg hover:bg-gray-100 transition-colors disabled:opacity-75 disabled:cursor-not-allowed"
           disabled={isLoading}
         >
-          <img src="/google-icon.svg" alt="Google" className="w-5 h-5" />
+          <img src="/google-icon.svg" alt="" className="w-5 h-5" />
           Continue with Google
         </button>
 

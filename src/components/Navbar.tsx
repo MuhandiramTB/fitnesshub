@@ -25,7 +25,8 @@ export default function Navbar() {
       const token = localStorage.getItem('token');
       if (token) {
         try {
-          const response = await fetch('http://localhost:5000/api/user/profile', {
+          const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+          const response = await fetch(`${apiBaseUrl}/api/user/profile`, {
             headers: {
               'Authorization': `Bearer ${token}`
             }
@@ -57,6 +58,11 @@ export default function Navbar() {
   const handleAuthClick = (isLogin: boolean) => {
     setIsLoginMode(isLogin);
     setIsRegisterModalOpen(true);
+  };
+
+  const handleLoginSuccessAction = (userData: UserData) => {
+    setUser(userData);
+    setIsRegisterModalOpen(false);
   };
 
   const navLinks = [
@@ -215,9 +221,7 @@ export default function Navbar() {
                 </div>
               )
             )}
-            <button className="text-white text-sm hover:text-[#38e07b] transition-colors">
-              Language
-            </button>
+            
           </div>
         </div>
       </div>
@@ -306,11 +310,7 @@ export default function Navbar() {
               </button>
             </div>
           )}
-          <div className="pt-4 pb-3 border-t border-[#38e07b]/20 w-full">
-            <button className="w-full text-white text-sm hover:text-[#38e07b] transition-colors px-4 py-2">
-              Language
-            </button>
-          </div>
+          
         </div>
       </div>
 
@@ -318,10 +318,7 @@ export default function Navbar() {
       <RegisterModal 
         isOpen={isRegisterModalOpen} 
         onCloseAction={() => setIsRegisterModalOpen(false)} 
-        onLoginSuccess={(userData) => {
-          setUser(userData);
-          setIsRegisterModalOpen(false);
-        }}
+        onLoginSuccessAction={handleLoginSuccessAction}
         initialMode={isLoginMode}
       />
     </header>
