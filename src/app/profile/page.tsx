@@ -482,7 +482,7 @@ export default function ProfilePage() {
 
           {/* Set New Goals Section */}
           <section className="mt-12">
-            <h2 className="text-xl text-white font-bold mb-6">Set New Goals</h2>
+            <h2 className="text-xl text-white font-bold mb-1">Set New Goals</h2>
             <div className="bg-gradient-to-br from-white/5 to-white/[0.02] backdrop-blur-sm rounded-2xl p-6 border border-white/10">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
@@ -530,6 +530,22 @@ export default function ProfilePage() {
             </div>
           </section>
         </main>
+
+        {/* Bottom Navigation Bar - Mobile Only */}
+        <nav className="fixed bottom-0 left-0 right-0 z-50 bg-[#1a1f1c] border-t border-[#38e07b]/10 flex justify-around items-center py-2 lg:hidden">
+          {navItems.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={`flex flex-col items-center justify-center gap-1 px-2 py-1 rounded-lg transition-all duration-200 text-xs font-medium ${
+                item.isActive ? 'text-[#38e07b]' : 'text-[#9eb7a8] hover:text-white'
+              }`}
+            >
+              {item.icon}
+              <span>{item.label}</span>
+            </Link>
+          ))}
+        </nav>
       </div>
     </div>
   );
