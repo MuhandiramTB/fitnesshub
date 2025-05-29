@@ -181,6 +181,15 @@ export default function ProfilePage() {
     }
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    router.push('/');
+  };
+
+  const handleBack = () => {
+    router.back();
+  };
+
   const weightData = {
     labels: ['Jan', 'Feb', 'Mar'],
     datasets: [
@@ -249,6 +258,17 @@ export default function ProfilePage() {
         isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
       } lg:translate-x-0 transition-transform duration-300 ease-in-out shadow-xl`}>
         <div className="flex flex-col h-full pt-20 p-4">
+          {/* Back Button */}
+          <button
+            onClick={handleBack}
+            className="flex items-center gap-2 px-4 py-3 rounded-lg text-[#9eb7a8] hover:text-white hover:bg-[#29382f]/50 transition-all duration-200 mb-6"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            <span className="text-sm font-medium">Back</span>
+          </button>
+
           {/* User Profile */}
           <div className="flex items-center gap-3 mb-8 px-2">
             <div className="w-10 h-10 rounded-full bg-[#38e07b] flex items-center justify-center text-black text-lg font-bold">
@@ -281,6 +301,19 @@ export default function ProfilePage() {
               ))}
             </ul>
           </nav>
+
+          {/* Logout Button */}
+          <div className="mt-auto pt-4 border-t border-white/10">
+            <button
+              onClick={handleLogout}
+              className="flex items-center gap-3 w-full px-4 py-3 rounded-lg text-[#9eb7a8] hover:text-white hover:bg-[#29382f]/50 transition-all duration-200"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+              </svg>
+              <span className="text-sm font-medium">Logout</span>
+            </button>
+          </div>
         </div>
       </div>
 
