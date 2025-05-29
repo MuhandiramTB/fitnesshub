@@ -145,7 +145,7 @@ export default function Navbar() {
       {/* Registration Modal */}
       <RegisterModal 
         isOpen={isRegisterModalOpen} 
-        onClose={() => setIsRegisterModalOpen(false)} 
+        onCloseAction={() => setIsRegisterModalOpen(false)} 
       />
     </header>
   );

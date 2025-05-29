@@ -5,10 +5,10 @@ import { useRouter } from 'next/navigation';
 
 interface RegisterModalProps {
   isOpen: boolean;
-  onClose: () => void;
+  onCloseAction: () => void;
 }
 
-export default function RegisterModal({ isOpen, onClose }: RegisterModalProps) {
+export default function RegisterModal({ isOpen, onCloseAction }: RegisterModalProps) {
   const router = useRouter();
   const [isLogin, setIsLogin] = useState(false);
   const [formData, setFormData] = useState({
@@ -42,7 +42,7 @@ export default function RegisterModal({ isOpen, onClose }: RegisterModalProps) {
 
       // Store token in localStorage
       localStorage.setItem('token', data.token);
-      onClose();
+      onCloseAction();
       router.refresh();
     } catch (err: any) {
       setError(err.message);
@@ -62,7 +62,7 @@ export default function RegisterModal({ isOpen, onClose }: RegisterModalProps) {
             {isLogin ? 'Login' : 'Create Account'}
           </h2>
           <button
-            onClick={onClose}
+            onClick={onCloseAction}
             className="text-gray-400 hover:text-white"
           >
             ✕
