@@ -270,7 +270,7 @@ export default function ProfilePage() {
       <Navbar />
       <div className="flex-1 w-full pt-16">
         {/* Desktop Sidebar */}
-        <aside className="hidden lg:block fixed left-0 top-16 bottom-0 w-64 bg-[#1a1f1c] border-r border-[#38e07b]/10">
+        <aside className="hidden lg:block fixed left-0 top-16 bottom-0 w-64 bg-[#111714] border-r border-[#38e07b]/10">
           <div className="p-6 flex flex-col h-full">
             <div className="flex items-center gap-3 mb-8">
               <div className="w-12 h-12 rounded-full bg-[#38e07b] flex items-center justify-center text-black text-xl font-bold">
@@ -328,7 +328,7 @@ export default function ProfilePage() {
           <div className="lg:hidden fixed top-4 right-4 z-50">
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="p-2 rounded-lg bg-[#1a1f1c] border border-[#38e07b]/10"
+              className="p-2 rounded-lg bg-[#111714] border border-[#38e07b]/10"
             >
               <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
@@ -338,7 +338,7 @@ export default function ProfilePage() {
 
           {/* Mobile Menu */}
           {isMobileMenuOpen && (
-            <div className="lg:hidden fixed inset-0 z-40 mt-16">
+            <div className="fixed inset-y-0 right-0 w-64 bg-[#111714] transform transition-transform duration-300 ease-in-out md:hidden z-50">
               <div className="absolute inset-0 bg-black/50" onClick={() => setIsMobileMenuOpen(false)} />
               <div className="absolute right-0 top-0 bottom-0 w-64 bg-[#111714] border-l border-[#38e07b]/10 p-6">
                 <div className="flex items-center gap-3 mb-8">
