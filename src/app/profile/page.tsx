@@ -52,8 +52,8 @@ export default function ProfilePage() {
   const router = useRouter();
   const [user, setUser] = useState<UserProfile | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
   const [editForm, setEditForm] = useState({
     name: '',
     email: '',
@@ -61,6 +61,7 @@ export default function ProfilePage() {
     workoutFrequency: ''
   });
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
 
   const navItems: NavItem[] = [
     {
@@ -147,14 +148,14 @@ export default function ProfilePage() {
         const userData = await response.json();
         setUser(userData);
         setEditForm({
-          name: userData.name,
-          email: userData.email,
+          name: userData.name || '',
+          email: userData.email || '',
           targetWeight: userData.targetWeight?.toString() || '',
           workoutFrequency: userData.workoutFrequency?.toString() || ''
         });
       } catch (error) {
         console.error('Error fetching profile:', error);
-        setError('Failed to load profile');
+        setError('Failed to load profile. Please try again later.');
       } finally {
         setIsLoading(false);
       }
@@ -163,10 +164,40 @@ export default function ProfilePage() {
     fetchProfile();
   }, [router]);
 
+  const validateForm = () => {
+    if (!editForm.targetWeight || !editForm.workoutFrequency) {
+      setError('Please fill in all required fields');
+      return false;
+    }
+
+    const targetWeight = parseFloat(editForm.targetWeight);
+    const workoutFrequency = parseInt(editForm.workoutFrequency);
+
+    if (isNaN(targetWeight) || targetWeight <= 0) {
+      setError('Please enter a valid target weight');
+      return false;
+    }
+
+    if (isNaN(workoutFrequency) || workoutFrequency <= 0 || workoutFrequency > 7) {
+      setError('Please enter a valid workout frequency (1-7 times per week)');
+      return false;
+    }
+
+    return true;
+  };
+
   const handleSave = async () => {
+    setError('');
+    setSuccess('');
+    
+    if (!validateForm()) {
+      return;
+    }
+
     const token = localStorage.getItem('token');
     if (!token) return;
 
+    setIsUpdating(true);
     try {
       const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
       const response = await fetch(`${apiBaseUrl}/api/user/profile/update`, {
@@ -188,10 +219,12 @@ export default function ProfilePage() {
 
       const updatedUser = await response.json();
       setUser(updatedUser);
-      setError('');
+      setSuccess('Profile updated successfully!');
     } catch (error) {
       console.error('Error updating profile:', error);
-      setError('Failed to update profile');
+      setError('Failed to update profile. Please try again.');
+    } finally {
+      setIsUpdating(false);
     }
   };
 
@@ -312,6 +345,7 @@ export default function ProfilePage() {
               <button
                 onClick={handleLogout}
                 className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-red-400 hover:text-red-300 hover:bg-red-400/10 transition-all duration-200 w-full text-left"
+                aria-label="Logout"
               >
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
@@ -329,6 +363,7 @@ export default function ProfilePage() {
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               className="p-2 rounded-lg bg-[#111714] border border-[#38e07b]/10"
+              aria-label="Toggle mobile menu"
             >
               <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
@@ -377,6 +412,7 @@ export default function ProfilePage() {
                       setIsMobileMenuOpen(false);
                     }}
                     className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-red-400 hover:text-red-300 hover:bg-red-400/10 transition-all duration-200 w-full text-left"
+                    aria-label="Logout"
                   >
                     <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
@@ -394,6 +430,18 @@ export default function ProfilePage() {
             <p className="text-[#9eb7a8] text-base">Member since {new Date(user?.createdAt || '').getFullYear()}</p>
           </div>
 
+          {/* Error and Success Messages */}
+          {error && (
+            <div className="mb-6 p-4 rounded-xl bg-red-400/10 border border-red-400/20 text-red-400">
+              {error}
+            </div>
+          )}
+          {success && (
+            <div className="mb-6 p-4 rounded-xl bg-[#38e07b]/10 border border-[#38e07b]/20 text-[#38e07b]">
+              {success}
+            </div>
+          )}
+
           {/* Progress Section */}
           <section className="mb-12">
             <h2 className="text-xl text-white font-bold mb-6">Your Progress</h2>
@@ -403,7 +451,7 @@ export default function ProfilePage() {
                 <div className="flex flex-col">
                   <div className="flex justify-between items-start mb-6">
                     <div>
-                      <h3 className="text-[32px] text-white font-bold mb-1">75 kg</h3>
+                      <h3 className="text-[32px] text-white font-bold mb-1">{user?.weight || 0} kg</h3>
                       <p className="text-[#9eb7a8] text-sm">Weight Over Time</p>
                     </div>
                     <span className="text-red-400 text-sm bg-red-400/10 px-3 py-1 rounded-full">Last 3 Months -2%</span>
@@ -419,7 +467,7 @@ export default function ProfilePage() {
                 <div className="flex flex-col">
                   <div className="flex justify-between items-start mb-6">
                     <div>
-                      <h3 className="text-[32px] text-white font-bold mb-1">3 times/week</h3>
+                      <h3 className="text-[32px] text-white font-bold mb-1">{user?.workoutFrequency || 0} times/week</h3>
                       <p className="text-[#9eb7a8] text-sm">Workout Frequency</p>
                     </div>
                     <span className="text-[#38e07b] text-sm bg-[#38e07b]/10 px-3 py-1 rounded-full">This Week +1</span>
@@ -442,67 +490,6 @@ export default function ProfilePage() {
             </div>
           </section>
 
-          {/* Achievements Section */}
-          <section>
-            <h2 className="text-xl text-white font-bold mb-6">Achievements</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {/* First Workout Achievement */}
-              <div className="bg-white/5 backdrop-blur-sm rounded-2xl overflow-hidden">
-                <div className="aspect-square relative">
-                  <img
-                    src="https://images.unsplash.com/photo-1526506118085-60ce8714f8c5"
-                    alt="First Workout"
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                <div className="p-4">
-                  <h3 className="text-white font-medium mb-1">First Workout</h3>
-                  <p className="text-[#9eb7a8] text-sm">Completed your first workout!</p>
-                </div>
-              </div>
-
-              {/* 5 Workouts Achievement */}
-              <div className="bg-white/5 backdrop-blur-sm rounded-2xl overflow-hidden">
-                <div className="aspect-square relative">
-                  <img
-                    src="https://images.unsplash.com/photo-1574680096145-d05b474e2155"
-                    alt="5 Workouts"
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                <div className="p-4">
-                  <h3 className="text-white font-medium mb-1">5 Workouts Completed</h3>
-                  <p className="text-[#9eb7a8] text-sm">You've completed 5 workouts. Keep it up!</p>
-                </div>
-              </div>
-
-              {/* Consistency Badge */}
-              <div className="bg-white/5 backdrop-blur-sm rounded-2xl overflow-hidden">
-                <div className="aspect-square relative bg-[#f8c4b9]">
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="bg-white rounded-xl p-4 shadow-lg">
-                      <svg className="w-12 h-12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M12 15C13.6569 15 15 13.6569 15 12C15 10.3431 13.6569 9 12 9C10.3431 9 9 10.3431 9 12C9 13.6569 10.3431 15 12 15Z" stroke="#111714" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                        <path d="M12 4V3" stroke="#111714" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                        <path d="M12 21V20" stroke="#111714" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                        <path d="M20 12H21" stroke="#111714" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                        <path d="M3 12H4" stroke="#111714" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                        <path d="M17.6569 6.34314L18.364 5.63603" stroke="#111714" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                        <path d="M5.63605 18.364L6.34315 17.6569" stroke="#111714" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                        <path d="M17.6569 17.6569L18.364 18.364" stroke="#111714" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                        <path d="M5.63605 5.63603L6.34315 6.34314" stroke="#111714" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                      </svg>
-                    </div>
-                  </div>
-                </div>
-                <div className="p-4">
-                  <h3 className="text-white font-medium mb-1">Consistency Badge</h3>
-                  <p className="text-[#9eb7a8] text-sm">Workout 3 times a week for a month</p>
-                </div>
-              </div>
-            </div>
-          </section>
-
           {/* Set New Goals Section */}
           <section className="mt-12">
             <h2 className="text-xl text-white font-bold mb-1">Set New Goals</h2>
@@ -517,6 +504,9 @@ export default function ProfilePage() {
                       onChange={(e) => setEditForm({ ...editForm, targetWeight: e.target.value })}
                       className="w-full px-4 py-3 rounded-xl bg-[#29382f]/50 text-white border border-white/10 focus:border-[#38e07b] focus:ring-1 focus:ring-[#38e07b] transition-all placeholder-white/30"
                       placeholder="Enter your target weight"
+                      min="0"
+                      step="0.1"
+                      required
                     />
                     <div className="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none">
                       <span className="text-[#9eb7a8] text-sm">kg</span>
@@ -532,6 +522,9 @@ export default function ProfilePage() {
                       onChange={(e) => setEditForm({ ...editForm, workoutFrequency: e.target.value })}
                       className="w-full px-4 py-3 rounded-xl bg-[#29382f]/50 text-white border border-white/10 focus:border-[#38e07b] focus:ring-1 focus:ring-[#38e07b] transition-all placeholder-white/30"
                       placeholder="Enter your workout frequency"
+                      min="1"
+                      max="7"
+                      required
                     />
                     <div className="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none">
                       <span className="text-[#9eb7a8] text-sm">/ week</span>
@@ -542,20 +535,28 @@ export default function ProfilePage() {
               <div className="mt-6">
                 <button
                   onClick={handleSave}
-                  className="flex items-center justify-center gap-2 w-full sm:w-auto bg-[#38e07b] text-black px-6 py-3 rounded-xl text-sm font-bold hover:bg-[#2bc665] transition-all focus:ring-2 focus:ring-[#38e07b] focus:ring-offset-2 focus:ring-offset-[#111714]"
+                  disabled={isUpdating}
+                  className="flex items-center justify-center gap-2 w-full sm:w-auto bg-[#38e07b] text-black px-6 py-3 rounded-xl text-sm font-bold hover:bg-[#2bc665] transition-all focus:ring-2 focus:ring-[#38e07b] focus:ring-offset-2 focus:ring-offset-[#111714] disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M5 12L10 17L19 8" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
-                  Update Goals
+                  {isUpdating ? (
+                    <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-black"></div>
+                  ) : (
+                    <>
+                      <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M5 12L10 17L19 8" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                      Update Goals
+                    </>
+                  )}
                 </button>
               </div>
             </div>
           </section>
         </main>
       </div>
-       {/* Bottom Navigation Bar - Mobile Only */}
-       <nav className="fixed bottom-0 left-0 right-0 z-50 bg-[#1a1f1c] border-t border-[#38e07b]/10 flex justify-around items-center py-2 lg:hidden">
+
+      {/* Bottom Navigation Bar - Mobile Only */}
+      <nav className="fixed bottom-0 left-0 right-0 z-50 bg-[#1a1f1c] border-t border-[#38e07b]/10 flex justify-around items-center py-2 lg:hidden">
         {navItems.map((item) => (
           <Link
             key={item.href}
@@ -568,7 +569,6 @@ export default function ProfilePage() {
             <span>{item.label}</span>
           </Link>
         ))}
-        <nav/>
       </nav>
     </div>
   );
