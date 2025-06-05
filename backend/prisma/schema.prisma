@@ -14,11 +14,169 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(uuid())
-  email     String   @unique
-  password  String?
-  name      String
-  googleId  String?  @unique
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id            String    @id @default(uuid())
+  name          String
+  email         String    @unique
+  password      String
+  role          Role      @default(MEMBER)
+  phoneNumber   String?
+  weight        Float?
+  targetWeight  Float?
+  workoutFrequency Int?
+  achievements  Json?     @default("{\"firstWorkout\":false,\"workoutsCompleted\":0,\"consistencyStreak\":0}")
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  membership    Membership?
+  attendances   Attendance[]
+  payments      Payment[]
+  systemLogs    SystemLog[]
+  bookings      Booking[]
+}
+
+model Admin {
+  id            String    @id @default(uuid())
+  name          String
+  email         String    @unique
+  password      String
+  role          Role      @default(ADMIN)
+  lastLogin     DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  systemLogs    SystemLog[]
+}
+
+model Package {
+  id            String    @id @default(uuid())
+  name          String
+  description   String?
+  price         Float
+  duration      Int       // Duration in days
+  features      String[]
+  isActive      Boolean   @default(true)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  memberships   Membership[]
+}
+
+model Service {
+  id            String    @id @default(uuid())
+  name          String
+  description   String?
+  price         Float
+  billingCycle  BillingCycle
+  category      String
+  isActive      Boolean   @default(true)
+  capacity      Int?
+  currentBookings Int     @default(0)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  bookings      Booking[]
+}
+
+model Membership {
+  id            String    @id @default(uuid())
+  userId        String    @unique
+  user          User      @relation(fields: [userId], references: [id])
+  packageId     String
+  package       Package   @relation(fields: [packageId], references: [id])
+  startDate     DateTime  @default(now())
+  endDate       DateTime
+  status        MembershipStatus @default(ACTIVE)
+  autoRenew     Boolean   @default(true)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  payments      Payment[]
+}
+
+model Attendance {
+  id            String    @id @default(uuid())
+  userId        String
+  user          User      @relation(fields: [userId], references: [id])
+  checkIn       DateTime  @default(now())
+  checkOut      DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+model Payment {
+  id            String    @id @default(uuid())
+  userId        String
+  user          User      @relation(fields: [userId], references: [id])
+  membershipId  String
+  membership    Membership @relation(fields: [membershipId], references: [id])
+  amount        Float
+  status        PaymentStatus @default(PENDING)
+  paymentMethod String
+  transactionId String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+model Booking {
+  id            String    @id @default(uuid())
+  serviceId     String
+  service       Service   @relation(fields: [serviceId], references: [id])
+  userId        String
+  user          User      @relation(fields: [userId], references: [id])
+  date          DateTime
+  status        BookingStatus @default(PENDING)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+model SystemLog {
+  id            String    @id @default(uuid())
+  type          LogType
+  action        String
+  description   String
+  userId        String?
+  user          User?     @relation(fields: [userId], references: [id])
+  adminId       String?
+  admin         Admin?    @relation(fields: [adminId], references: [id])
+  metadata      Json?
+  createdAt     DateTime  @default(now())
+}
+
+enum Role {
+  ADMIN
+  MEMBER
+}
+
+enum MembershipStatus {
+  ACTIVE
+  EXPIRED
+  CANCELLED
+  SUSPENDED
+}
+
+enum PaymentStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  REFUNDED
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  COMPLETED
+}
+
+enum BillingCycle {
+  DAILY
+  WEEKLY
+  MONTHLY
+  QUARTERLY
+  ANNUALLY
+  FIXED
+}
+
+enum LogType {
+  ATTENDANCE
+  MEMBERSHIP
+  PAYMENT
+  SYSTEM
+  PACKAGE
+  SERVICE
 }

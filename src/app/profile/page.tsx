@@ -200,7 +200,7 @@ export default function ProfilePage() {
     setIsUpdating(true);
     try {
       const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
-      const response = await fetch(`${apiBaseUrl}/api/user/profile/update`, {
+      const response = await fetch(`${apiBaseUrl}/api/user/profile`, {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`,
